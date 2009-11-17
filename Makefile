@@ -1,10 +1,11 @@
 GCC     = g++
 CFLAGS  = -Wall -lgsl -lm -lgslcblas
-SOURCE  = hattrick.cpp
+SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp
 OBJECTS = $(SOURCE: .c=.o)
 
 all:
-	$(GCC) $(CFLAGS) -o hattrick $(SOURCE)
+	$(GCC) $(CFLAGS) -c $(SOURCE)
+	$(GCC) $(CFLAGS) -o hattrick $(OBJECTS)
 
 clean:
-	rm *.~
+	rm *.o
