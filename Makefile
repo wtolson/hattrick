@@ -1,4 +1,6 @@
-
+GCC     = gcc
+CFLAGS  = -Wall -lgsl -lm -lgslcblas
+SOURCE  = hattrick.c
 
 all:
-	gcc -Wall -lgsl -lm -lgslcblas -o hattrick hattrick.c
+	$(GCC) $(CFLAGS) -o hattrick $(SOURCE)
