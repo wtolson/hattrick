@@ -148,6 +148,14 @@ jac (double t, const double y[], double *dfdy,
 int
 main (void)
 {
+	
+	double k = 0.01720209895;
+	double G = k*k;
+	//int N = 2;
+	double M[N];
+	M[0] = G;
+	M[1] = G/328900.56;
+	
 	const gsl_odeiv_step_type * T
 		//= gsl_odeiv_step_rkf45;
 		= gsl_odeiv_step_bsimp;
@@ -159,12 +167,6 @@ main (void)
 	gsl_odeiv_evolve * e
 		= gsl_odeiv_evolve_alloc (8*N);
 
-
-	double k = 0.01720209895;
-	double G = k*k;
-	double M[N];
-	M[0] = G;
-	M[1] = G/328900.56;
 
 	gsl_odeiv_system sys = {func, jac, 8*N, M};
 	//gsl_odeiv_system sys = {func, NULL, 8*N, M};
