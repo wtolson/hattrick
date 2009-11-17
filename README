@@ -1,0 +1,13 @@
+Hat Trick Nbody Simulator
+By William Olson and Jason Dittmann
+Version 0.5
+GNU General Public License v3
+http://code.google.com/p/hattrick-nbody/
+
+TO COMPILE:
+	Simpley type 'make'.
+	This uses gcc by default.  To change
+	Edit GCC in the Makefile.
+
+This is the basic integrator for the sun-earth system only.
+

@@ -28,8 +28,7 @@ class hatparams
 		double * M;		
 		hatparams(const int * N, double M[]);
 					
-	private:
-		
+	private:		
 		/* add your private declarations */
 };
 
