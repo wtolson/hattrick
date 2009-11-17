@@ -1,6 +1,6 @@
 GCC     = g++
 CFLAGS  = -Wall -lgsl -lm -lgslcblas
-SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp
+SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp voodoomagic.cpp
 OBJECTS = $(SOURCE: .c=.o)
 
 all:

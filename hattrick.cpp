@@ -25,6 +25,7 @@
 #include <math.h>
 #include "gravity.h"
 #include "hatparams.h"
+#include "voodoomagic.h"
 
 //#define N 2
 
@@ -62,6 +63,8 @@ main (void)
 	double h = h0;
 	double sp = 0.0;
 	double y[8*N] = { 0.0, 0.0, sp, 0.0, 0.0, sp, 0.0, 0.0, 1, 0.0, sp, 0.0, k, sp, 0.0, 0.0 };	
+	
+	sacrificeChicken();
 
 	while (t < t1)
 	{

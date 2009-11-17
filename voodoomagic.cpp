@@ -1,0 +1,3 @@
+void sacrificeChicken(){
+	//More magic.
+}
