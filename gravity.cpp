@@ -4,7 +4,7 @@
 
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
-#include <math.h>
+#include <cmath>
 #include "hatparams.h"
 
 int

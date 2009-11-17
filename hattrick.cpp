@@ -17,13 +17,16 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-
-//#include <stdio.h>
+// C++ Libraries
 #include <iostream>
+#include <fstream>
+#include <cmath>
+
+// GSL Libraries
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv.h>
-#include <gsl/gsl_const_mksa.h>
-#include <math.h>
+
+// My Libraries
 #include "gravity.h"
 #include "hatparams.h"
 #include "voodoomagic.h"
@@ -31,7 +34,7 @@
 using namespace std;
 
 int
-main (void)
+main (int argc, char** argv)
 {
 	
 	double k = 0.01720209895;
@@ -58,7 +61,20 @@ main (void)
 	//gsl_odeiv_system sys = {func, jac, 9*N, &hp};
 	gsl_odeiv_system sys = {func, NULL, 9*N, &hp};
 
-	double t = 0.0, t1 = 365.25;
+	//double t = 0.0, t1 = 365.25;
+	double t, t1;
+	ifstream ifs ( "test.txt" , ifstream::in );
+	if (ifs.is_open())
+	{
+		while (! ifs.eof() )
+		{
+			ifs >> t;
+			ifs >> t1;
+		}
+		ifs.close();
+	}
+
+	
 	double h0 = 1E0;
 	double h = h0;
 	double sp = 0.0;
