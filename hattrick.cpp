@@ -27,8 +27,6 @@
 #include "hatparams.h"
 #include "voodoomagic.h"
 
-//#define N 2
-
 
 int
 main (void)
@@ -44,25 +42,25 @@ main (void)
 	hatparams hp = hatparams(&N, M);
 	
 	const gsl_odeiv_step_type * T
-		//= gsl_odeiv_step_rkf45;
-		= gsl_odeiv_step_bsimp;
+		= gsl_odeiv_step_rkf45;
+		//= gsl_odeiv_step_bsimp;
 
 	gsl_odeiv_step * s
-		= gsl_odeiv_step_alloc (T, 8*N);
+		= gsl_odeiv_step_alloc (T, 9*N);
 	gsl_odeiv_control * c
-		= gsl_odeiv_control_y_new (1e-2, 0.0);
+		= gsl_odeiv_control_y_new (1e-10, 0.0);
 	gsl_odeiv_evolve * e
-		= gsl_odeiv_evolve_alloc (8*N);
+		= gsl_odeiv_evolve_alloc (9*N);
 
 
-	gsl_odeiv_system sys = {func, jac, 8*N, &hp};
-	//gsl_odeiv_system sys = {func, NULL, 8*N, M};
+	//gsl_odeiv_system sys = {func, jac, 9*N, &hp};
+	gsl_odeiv_system sys = {func, NULL, 9*N, &hp};
 
 	double t = 0.0, t1 = 365.25;
 	double h0 = 1E0;
 	double h = h0;
 	double sp = 0.0;
-	double y[8*N] = { 0.0, 0.0, sp, 0.0, 0.0, sp, 0.0, 0.0, 1, 0.0, sp, 0.0, k, sp, 0.0, 0.0 };	
+	double y[9*N] = { 0.0, 0.0, sp, 0.0, 0.0, sp, 0.0, 0.0, sp, 1, 0.0, sp, 0.0, k, sp, 0.0, 0.0, sp };	
 	
 	sacrificeChicken();
 
@@ -76,8 +74,8 @@ main (void)
 		printf("%f", t);
 		//h = h0;
 		int i;
-		for(i = 0; i < 8*N; i++) {
-			if (i!=2 && i!=5)
+		for(i = 0; i < 9*N; i++) {
+			if (i%3!=2)
 			printf (" %f", y[i]);
 		}
 		printf("\n");
