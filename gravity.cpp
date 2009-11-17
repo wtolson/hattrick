@@ -5,13 +5,15 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
 #include <math.h>
+#include "hatparams.h"
 
 int
 func (double t, const double y[], double f[],
 	  void *params)
 {
-	double * M = (double *) params;
-	int N = 2;
+	hatparams hp = *(hatparams *) params;
+	double * M = hp.M;
+	int N = *hp.N;
 	int i,j;
 	for(i=0; i<8*N; i++)
 	{

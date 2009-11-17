@@ -54,15 +54,14 @@ main (void)
 		= gsl_odeiv_evolve_alloc (8*N);
 
 
-	gsl_odeiv_system sys = {func, jac, 8*N, M};
+	gsl_odeiv_system sys = {func, jac, 8*N, &hp};
 	//gsl_odeiv_system sys = {func, NULL, 8*N, M};
 
 	double t = 0.0, t1 = 365.25;
-	double h0 = 1E2;
+	double h0 = 1E0;
 	double h = h0;
 	double sp = 0.0;
-	double y[8*N] = { 0.0, 0.0, sp, 0.0, 0.0, sp, 0.0, 0.0, 1, 0.0, sp, 0.0, k, sp, 0.0, 0.0 };
-
+	double y[8*N] = { 0.0, 0.0, sp, 0.0, 0.0, sp, 0.0, 0.0, 1, 0.0, sp, 0.0, k, sp, 0.0, 0.0 };	
 
 	while (t < t1)
 	{
