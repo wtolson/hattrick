@@ -18,7 +18,8 @@
 //      MA 02110-1301, USA.
 
 
-#include <stdio.h>
+//#include <stdio.h>
+#include <iostream>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv.h>
 #include <gsl/gsl_const_mksa.h>
@@ -27,6 +28,7 @@
 #include "hatparams.h"
 #include "voodoomagic.h"
 
+using namespace std;
 
 int
 main (void)
@@ -71,14 +73,13 @@ main (void)
 		if (status != GSL_SUCCESS)
 			break;
 
-		printf("%f", t);
 		//h = h0;
+		cout << t;
 		int i;
 		for(i = 0; i < 9*N; i++) {
-			if (i%3!=2)
-			printf (" %f", y[i]);
+			if (i%3!=2) cout << " " << y[i];
 		}
-		printf("\n");
+		cout << endl;
 	}
 
 	gsl_odeiv_evolve_free (e);
