@@ -1,6 +1,6 @@
 GCC     = g++
 CFLAGS  = -Wall -lgsl -lm -lgslcblas
-SOURCE  = hattrick.c
+SOURCE  = hattrick.cpp
 OBJECTS = $(SOURCE: .c=.o)
 
 all:
