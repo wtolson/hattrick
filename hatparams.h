@@ -30,7 +30,7 @@ class hatparams
 		double t0, t1, h0, h1, accr, printSkip;
 		hatparams(int argc, char** argv);
 		bool success() {return SUCCESS;};
-		bool orbits() {return (printSkip==-1);};
+		bool orbits() {return (printSkip==-1.0);};
 		void print(double t);
 					
 	private:		
