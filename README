@@ -11,7 +11,11 @@ TO COMPILE:
 
 TO RUN:
 	Input format:
-	    ./hattrick baseSys r m
+	    ./hattrick baseSys m r
+
+	Example: ./hattrick sunearth.dat 9.5492E-4 5.204267 > out.txt
+		will run the Sun, Earth and a circularized Jupiter.
+	
 
 	Where:
 	    baseSys: Name of the file specifying the base system.

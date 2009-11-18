@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <cmath>
 #include "hatparams.h"
 
@@ -45,9 +46,10 @@ hatparams::hatparams(int argc, char** argv, double * t, double * t1,
 			ifs >> *h1;
 			ifs >> *accr;
 			
+			N++;
 			y = new double[9*N];
 			M = new double[N];
-			for( int i = 0; i < N; i++)
+			for( int i = 0; i < N-1; i++)
 			{
 				ifs >> M[i];
 				M[i] *= G;
@@ -61,19 +63,30 @@ hatparams::hatparams(int argc, char** argv, double * t, double * t1,
 				y[9*i + 5] = 0.0;
 				y[9*i + 8] = 0.0;
 			}
-			ifs.close();				
+			ifs.close();
 		}
+		int i = N-1;
+		M[i] = G*atof(argv[2]);
+		y[9*i] = atof(argv[3]);			// x
+		y[9*i + 1] = 0.0;				// vx
+		y[9*i + 2] = 0.0;				// space
+		y[9*i + 3] = 0.0;				// y
+		y[9*i + 4] = sqrt(M[0]/y[9*i]); // vy
+		y[9*i + 5] = 0.0;				// space
+		y[9*i + 6] = 0.0;				// z
+		y[9*i + 7] = 0.0;				// vz
+		y[9*i + 8] = 0.0;				// space
 	}
 }
 	
 void hatparams::printHelp() {
 	cout << "Input format:" << endl;
-	cout << "    ./hattrick baseSys r m"  << endl << endl;
+	cout << "    ./hattrick baseSys m r"  << endl << endl;
 	
 	cout << "Where:"  << endl;
 	cout << "    baseSys: Name of the file specifying the base system." << endl;
-	cout << "    r: Radius of the perturbing body." << endl;
-	cout << "    m: Mass of the perturbing body." << endl << endl;
+	cout << "    m: Mass of the perturbing body." << endl;
+	cout << "    r: Radius of the perturbing body." << endl << endl;
 	
 	cout << "Base system file format:" << endl;
 	cout << "    n t0 t1 h0 h1 accr" << endl;

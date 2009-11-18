@@ -65,7 +65,7 @@ int main (int argc, char** argv)
 		if (status != GSL_SUCCESS)
 			break;
 
-		//h = h0;
+		h = h0;
 		cout << t;
 		for(int i = 0; i < 9*hp.N; i++) {
 			if (i%3!=2) cout << " " << hp.y[i];

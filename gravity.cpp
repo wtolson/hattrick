@@ -2,14 +2,14 @@
  * The System of equations describing the gravity between the particles. 
  */
 
-//#include <iostream>
+#include <iostream>
 #include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
 #include "hatparams.h"
 #include "gravity.h"
 
-//using namespace std;
+using namespace std;
 
 int
 func (double t, const double y[], double f[],
