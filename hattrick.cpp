@@ -51,8 +51,8 @@ int main (int argc, char** argv)
 		= gsl_odeiv_evolve_alloc (9*hp.N);
 
 
-	//gsl_odeiv_system sys = {func, jac, 9*hp.N, &hp};
-	gsl_odeiv_system sys = {func, NULL, 9*hp.N, &hp};
+	gsl_odeiv_system sys = {func, jac, 9*hp.N, &hp};
+	//gsl_odeiv_system sys = {func, NULL, 9*hp.N, &hp};
 	
 	// Initial print out.
 	cout << t;
