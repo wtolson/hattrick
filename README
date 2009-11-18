@@ -1,6 +1,6 @@
 Hat Trick Nbody Simulator
 By William Olson and Jason Dittmann
-Version 0.5
+Version 0.6
 GNU General Public License v3
 http://code.google.com/p/hattrick-nbody/
 
@@ -9,5 +9,26 @@ TO COMPILE:
 	This uses gcc by default.  To change
 	Edit GCC in the Makefile.
 
-This is the basic integrator for the sun-earth system only.
+TO RUN:
+	Input format:
+	    ./hattrick baseSys r m
 
+	Where:
+	    baseSys: Name of the file specifying the base system.
+	    r: Radius of the perturbing body.
+	    m: Mass of the perturbing body.
+
+	Base system file format:
+	    n t0 t1 h0 h1 accr
+	    m1 x1 y1 z1 vx1 vy1 vz1
+	    m2 x2 y2 z2 vx2 vy2 vz2
+		...
+	    mn xn yn zn vxn vyn vzn
+
+	Where:
+	    n: Number of bodies in the base system.
+	    t0: Initial system time.
+	    t1: Final system time.
+	    h0: Initial time step.
+	    h1: Max time step.
+	    accr: Accuracy paramater.

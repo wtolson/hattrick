@@ -19,7 +19,7 @@
 
 // C++ Libraries
 #include <iostream>
-//#include <cmath>
+#include <cmath>
 
 // GSL Libraries
 #include <gsl/gsl_errno.h>
@@ -39,11 +39,6 @@ main (int argc, char** argv)
 	
 	hatparams hp = hatparams (argc, argv, &t, &t1, &h0, &h1, &accr);
 	if (!hp.success()) return 1;
-	
-	for(int i = 0; i < 9*hp.N; i++) {
-			cout << " " << hp.y[i];
-	}		
-	cout << endl;
 	
 	const gsl_odeiv_step_type * T
 		= gsl_odeiv_step_rkf45;
