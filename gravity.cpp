@@ -2,27 +2,31 @@
  * The System of equations describing the gravity between the particles. 
  */
 
+//#include <iostream>
+#include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
-#include <cmath>
 #include "hatparams.h"
+#include "gravity.h"
+
+//using namespace std;
 
 int
 func (double t, const double y[], double f[],
 	  void *params)
 {
 	hatparams hp = *(hatparams *) params;
+	int N = hp.N;
 	double * M = hp.M;
-	int N = *hp.N;
-	int i,j;
-	for(i=0; i<9*N; i++)
+	
+	for(int i=0; i<9*N; i++)
 	{
 		if ((i%9%3) == 0)
 		{
 			f[i] = y[i+1];
 		} else if ((i%9%3) == 1) {
 			f[i] = 0;
-			for(j=(i%9); j<9*N; j+=9){
+			for(int j=(i%9); j<9*N; j+=9){
 				if (i/9!=j/9)
 				{
 					double x[3];
@@ -45,17 +49,18 @@ int
 jac (double t, const double y[], double *dfdy,
      double dfdt[], void *params)
 {
-	int N = 2;
-	double * M = (double *) params;
+	hatparams hp = *(hatparams *) params;
+	int N = hp.N;
+	double * M = hp.M;
 	gsl_matrix_view dfdy_mat
 		= gsl_matrix_view_array (dfdy, 9*N, 9*N);
 	gsl_matrix * m = &dfdy_mat.matrix;
 
 
-	int i,j,k;
-	for (i=0; i<9*N; i++)
+
+	for (int i=0; i<9*N; i++)
 	{
-		for (j=0; j<9*N; j++)
+		for (int j=0; j<9*N; j++)
 		{
 			if ((i%9%2) == 0)
 			{
@@ -70,7 +75,7 @@ jac (double t, const double y[], double *dfdy,
 					gsl_matrix_set (m, i, j, 0.0);
 				} else if (i == j+1){
 					double ftemp = 0;
-					for(k=(i%9); k<9*N; k+=9)
+					for(int k=(i%9); k<9*N; k+=9)
 					{
 						if (i/9!=k/9)
 						{
@@ -87,7 +92,7 @@ jac (double t, const double y[], double *dfdy,
 					gsl_matrix_set (m, i, j, ftemp);
 				} else if (i/9 == j/9) {
 					double ftemp = 0;
-					for(k=(i%9); k<9*N; k+=9)
+					for(int k=(i%9); k<9*N; k+=9)
 					{
 						if (i/9!=k/9)
 						{
@@ -119,7 +124,7 @@ jac (double t, const double y[], double *dfdy,
 		}
 	}
 
-	for (i=0; i<9*N; i++)
+	for (int i=0; i<9*N; i++)
 	{
 		dfdt[i] = 0.0;
 	}

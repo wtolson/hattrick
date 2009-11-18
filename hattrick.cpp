@@ -19,8 +19,7 @@
 
 // C++ Libraries
 #include <iostream>
-#include <fstream>
-#include <cmath>
+//#include <cmath>
 
 // GSL Libraries
 #include <gsl/gsl_errno.h>
@@ -36,49 +35,32 @@ using namespace std;
 int
 main (int argc, char** argv)
 {
+	double t, t1, h0, h1, accr, y[0];
 	
-	double k = 0.01720209895;
-	double G = k*k;
-	const int N = 2;
-	double M[N];
-	M[0] = G;
-	M[1] = G/328900.56;
+	hatparams hp = hatparams (argc, argv, &t, &t1, &h0, &h1, &accr, y);
+	if (!hp.success()) return 1;
 	
-	hatparams hp = hatparams(&N, M);
+	for(int i = 0; i < 9*hp.N; i++) {
+			cout << " " << y[i];
+	}		
+	cout << endl;
 	
 	const gsl_odeiv_step_type * T
 		= gsl_odeiv_step_rkf45;
 		//= gsl_odeiv_step_bsimp;
 
 	gsl_odeiv_step * s
-		= gsl_odeiv_step_alloc (T, 9*N);
+		= gsl_odeiv_step_alloc (T, 9*hp.N);
 	gsl_odeiv_control * c
-		= gsl_odeiv_control_y_new (1e-10, 0.0);
+		= gsl_odeiv_control_y_new (accr, 0.0);
 	gsl_odeiv_evolve * e
-		= gsl_odeiv_evolve_alloc (9*N);
+		= gsl_odeiv_evolve_alloc (9*hp.N);
 
 
-	//gsl_odeiv_system sys = {func, jac, 9*N, &hp};
-	gsl_odeiv_system sys = {func, NULL, 9*N, &hp};
-
-	//double t = 0.0, t1 = 365.25;
-	double t, t1;
-	ifstream ifs ( "test.txt" , ifstream::in );
-	if (ifs.is_open())
-	{
-		while (! ifs.eof() )
-		{
-			ifs >> t;
-			ifs >> t1;
-		}
-		ifs.close();
-	}
-
+	//gsl_odeiv_system sys = {func, jac, 9*hp.N, &hp};
+	gsl_odeiv_system sys = {func, NULL, 9*hp.N, &hp};
 	
-	double h0 = 1E0;
 	double h = h0;
-	double sp = 0.0;
-	double y[9*N] = { 0.0, 0.0, sp, 0.0, 0.0, sp, 0.0, 0.0, sp, 1, 0.0, sp, 0.0, k, sp, 0.0, 0.0, sp };	
 	
 	sacrificeChicken();
 
@@ -91,8 +73,7 @@ main (int argc, char** argv)
 
 		//h = h0;
 		cout << t;
-		int i;
-		for(i = 0; i < 9*N; i++) {
+		for(int i = 0; i < 9*hp.N; i++) {
 			if (i%3!=2) cout << " " << y[i];
 		}
 		cout << endl;

@@ -24,12 +24,17 @@
 class hatparams
 {
 	public:
-		const int * N;
-		double * M;		
-		hatparams(const int * N, double M[]);
+		int N;
+		double * M;
+		double k;
+		double G;
+		hatparams(int argc, char** argv, double * t, double * t1,
+				  double * h0, double * h1, double * accr, double y[]);
+		bool success() {return SUCCESS;};
 					
 	private:		
-		/* add your private declarations */
+		bool SUCCESS;
+		void printHelp();
 };
 
 #endif /* HATPARAMS_H */ 
