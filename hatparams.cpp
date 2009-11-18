@@ -25,7 +25,7 @@
 using namespace std;
 
 hatparams::hatparams(int argc, char** argv, double * t, double * t1,
-					 double * h0, double * h1, double * accr, double y[])
+					 double * h0, double * h1, double * accr)
 {
 	k = 0.01720209895;
 	G = k*k;

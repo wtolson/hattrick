@@ -28,8 +28,9 @@ class hatparams
 		double * M;
 		double k;
 		double G;
+		double * y;
 		hatparams(int argc, char** argv, double * t, double * t1,
-				  double * h0, double * h1, double * accr, double y[]);
+				  double * h0, double * h1, double * accr);
 		bool success() {return SUCCESS;};
 					
 	private:		

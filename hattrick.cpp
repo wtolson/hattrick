@@ -35,13 +35,13 @@ using namespace std;
 int
 main (int argc, char** argv)
 {
-	double t, t1, h0, h1, accr, y[0];
+	double t, t1, h0, h1, accr;
 	
-	hatparams hp = hatparams (argc, argv, &t, &t1, &h0, &h1, &accr, y);
+	hatparams hp = hatparams (argc, argv, &t, &t1, &h0, &h1, &accr);
 	if (!hp.success()) return 1;
 	
 	for(int i = 0; i < 9*hp.N; i++) {
-			cout << " " << y[i];
+			cout << " " << hp.y[i];
 	}		
 	cout << endl;
 	
@@ -66,7 +66,7 @@ main (int argc, char** argv)
 
 	while (t < t1)
 	{
-		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, t1, &h, y);
+		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, t1, &h, hp.y);
 
 		if (status != GSL_SUCCESS)
 			break;
@@ -74,7 +74,7 @@ main (int argc, char** argv)
 		//h = h0;
 		cout << t;
 		for(int i = 0; i < 9*hp.N; i++) {
-			if (i%3!=2) cout << " " << y[i];
+			if (i%3!=2) cout << " " << hp.y[i];
 		}
 		cout << endl;
 	}
