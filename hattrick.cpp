@@ -32,14 +32,13 @@
 
 using namespace std;
 
-int
-main (int argc, char** argv)
+int main (int argc, char** argv)
 {
 	double t, t1, h0, h1, accr;
-	
+
 	hatparams hp = hatparams (argc, argv, &t, &t1, &h0, &h1, &accr);
 	if (!hp.success()) return 1;
-	
+
 	const gsl_odeiv_step_type * T
 		= gsl_odeiv_step_rkf45;
 		//= gsl_odeiv_step_bsimp;
@@ -54,9 +53,9 @@ main (int argc, char** argv)
 
 	//gsl_odeiv_system sys = {func, jac, 9*hp.N, &hp};
 	gsl_odeiv_system sys = {func, NULL, 9*hp.N, &hp};
-	
+
 	double h = h0;
-	
+
 	sacrificeChicken();
 
 	while (t < t1)
