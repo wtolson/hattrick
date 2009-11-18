@@ -53,24 +53,38 @@ int main (int argc, char** argv)
 
 	//gsl_odeiv_system sys = {func, jac, 9*hp.N, &hp};
 	gsl_odeiv_system sys = {func, NULL, 9*hp.N, &hp};
+	
+	// Initial print out.
+	cout << t;
+	for(int i = 0; i < 9*hp.N; i++) {
+		if (i%3!=2) cout << " " << hp.y[i];
+	}
+	cout << endl;
+	
 
-	double h = h0;
+	double h=h0, x=0.0, x0=0.0;
 
 	sacrificeChicken();
 
 	while (t < t1)
 	{
+		x0 = x;
+		h0 = h;
 		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, t1, &h, hp.y);
 
 		if (status != GSL_SUCCESS)
 			break;
-
-		h = h0;
-		cout << t;
-		for(int i = 0; i < 9*hp.N; i++) {
-			if (i%3!=2) cout << " " << hp.y[i];
+		
+		h = min(h, h1);
+		
+		x = hp.y[12] - hp.y[3];
+		if(x>=0.0 && x0<0.0) {
+			cout << t << " " << h0;
+			for(int i = 0; i < 9*hp.N; i++) {
+				if (i%3!=2) cout << " " << hp.y[i];
+			}
+			cout << endl;
 		}
-		cout << endl;
 	}
 
 	gsl_odeiv_evolve_free (e);
