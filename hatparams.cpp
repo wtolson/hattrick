@@ -25,49 +25,82 @@
 
 using namespace std;
 
-hatparams::hatparams(int argc, char** argv, double * t, double * t1,
-					 double * h0, double * h1, double * accr)
+hatparams::hatparams(int argc, char** argv)
 {
 	k = 0.01720209895;
 	G = k*k;
-	if (argc != 4) {
+	this->SUCCESS = true;
+	
+	if (argc == 1) {
 		this->SUCCESS = false;
 		printHelp();
-	} else {
-		this->SUCCESS = true;
-		
-		ifstream ifs ( argv[1] , ifstream::in );
-		if (ifs.is_open())
-		{
-			ifs >> N;
-			ifs >> *t;
-			ifs >> *t1;
-			ifs >> *h0;
-			ifs >> *h1;
-			ifs >> *accr;
-			
-			N++;
-			y = new double[9*N];
-			M = new double[N];
-			for( int i = 0; i < N-1; i++)
-			{
-				ifs >> M[i];
-				M[i] *= G;
-				ifs >> y[9*i];
-				ifs >> y[9*i + 3];
-				ifs >> y[9*i + 6];
-				ifs >> y[9*i + 1];
-				ifs >> y[9*i + 4];
-				ifs >> y[9*i + 7];
-				y[9*i + 2] = 0.0;
-				y[9*i + 5] = 0.0;
-				y[9*i + 8] = 0.0;
-			}
-			ifs.close();
-		}
-		int i = N-1;
-		M[i] = G*atof(argv[2]);
-		y[9*i] = atof(argv[3]);			// x
+		return;
+	}
+	
+	this->SUCCESS = true;
+	
+	ifstream ifs ( argv[1] , ifstream::in );
+	
+	if (!ifs.is_open()) {
+		this->SUCCESS = false;
+		cerr << "The file " << argv[1] << " does not exist." << endl;
+		printHelp();
+		return;
+	}
+	
+	int n1, n2=0;
+	
+	ifs >> n1;
+	ifs >> t0;
+	ifs >> t1;
+	ifs >> h0;
+	ifs >> h1;
+	ifs >> accr;
+	ifs >> printSkip;
+	ifs >> stepType;
+	
+	if (stepType!=0 && stepType!=1) {
+		this->SUCCESS = false;
+		cerr << "Invalid integration step type." << endl;
+		printHelp();
+		return;
+	}
+	
+	if (argc >= 3)
+		n2 = atoi(argv[2]);
+	
+	if (argc >= 3 && argc != (3+2*n2)) {
+		this->SUCCESS = false;
+		if (argc > (3+2*n2))
+			cerr << "Too many arguments." << endl;
+		if (argc < (3+2*n2))
+			cerr << "Too few arguments." << endl;
+		printHelp();
+		return;
+	}
+	
+	N = n1+n2;
+	y = new double[9*N];
+	M = new double[N];
+	for(int i = 0; i < n1; i++)
+	{
+		ifs >> M[i];
+		M[i] *= G;
+		ifs >> y[9*i];
+		ifs >> y[9*i + 3];
+		ifs >> y[9*i + 6];
+		ifs >> y[9*i + 1];
+		ifs >> y[9*i + 4];
+		ifs >> y[9*i + 7];
+		y[9*i + 2] = 0.0;
+		y[9*i + 5] = 0.0;
+		y[9*i + 8] = 0.0;
+	}
+	ifs.close();
+	
+	for(int i=n1; i<N; i++) {
+		M[i] = G*atof(argv[3+2*(i-n1)]);// M
+		y[9*i] = atof(argv[4+2*(i-n1)]);// x
 		y[9*i + 1] = 0.0;				// vx
 		y[9*i + 2] = 0.0;				// space
 		y[9*i + 3] = 0.0;				// y
@@ -77,31 +110,46 @@ hatparams::hatparams(int argc, char** argv, double * t, double * t1,
 		y[9*i + 7] = 0.0;				// vz
 		y[9*i + 8] = 0.0;				// space
 	}
+	
 }
+
+void hatparams::print(double t) {
+	cout << t << " " << h0;
+	for(int i = 0; i < 9*N; i++) {
+		if (i%3!=2) cout << " " << y[i];
+	}
+	cout << endl;
+}
+
 	
 void hatparams::printHelp() {
-	cout << "Input format:" << endl;
-	cout << "    ./hattrick baseSys m r"  << endl << endl;
+	cerr << "Input format:" << endl;
+	cerr << "    ./hattrick baseSys" << endl;	
+	cerr << "    ./hattrick baseSys n m1 r1 ... mn rn"  << endl << endl;
 	
-	cout << "Where:"  << endl;
-	cout << "    baseSys: Name of the file specifying the base system." << endl;
-	cout << "    m: Mass of the perturbing body." << endl;
-	cout << "    r: Radius of the perturbing body." << endl << endl;
+	cerr << "Where:"  << endl;
+	cerr << "    baseSys: Name of the file specifying the base system." << endl;
+	cerr << "    n (optional): Number of perturbing bodies." << endl;
+	cerr << "    mn (optional): Mass of the nth perturbing body." << endl;
+	cerr << "    rn (optional): Radius of the nth perturbing body." << endl << endl;
 	
-	cout << "Base system file format:" << endl;
-	cout << "    n t0 t1 h0 h1 accr" << endl;
-	cout << "    m1 x1 y1 z1 vx1 vy1 vz1" << endl;
-	cout << "    m2 x2 y2 z2 vx2 vy2 vz2" << endl;
-	cout << "        ..." << endl;
-	cout << "    mn xn yn zn vxn vyn vzn" << endl << endl;
+	cerr << "Base system file format:" << endl;
+	cerr << "    n t0 t1 h0 h1 accr printSkip stepType" << endl;
+	cerr << "    m1 x1 y1 z1 vx1 vy1 vz1" << endl;
+	cerr << "    m2 x2 y2 z2 vx2 vy2 vz2" << endl;
+	cerr << "        ..." << endl;
+	cerr << "    mn xn yn zn vxn vyn vzn" << endl << endl;
 	
-	cout << "Where:"  << endl;
-	cout << "    n: Number of bodies in the base system." << endl;
-	cout << "    t0: Initial system time." << endl;
-	cout << "    t1: Final system time." << endl;
-	cout << "    h0: Initial time step." << endl;
-	cout << "    h1: Max time step." << endl;
-	cout << "    accr: Accuracy paramater." << endl;		
+	cerr << "Where:"  << endl;
+	cerr << "    n: Number of bodies in the base system." << endl;
+	cerr << "    t0: Initial system time." << endl;
+	cerr << "    t1: Final system time." << endl;
+	cerr << "    h0: Initial time step." << endl;
+	cerr << "    h1: Max time step." << endl;
+	cerr << "    accr: Accuracy paramater." << endl;
+	cerr << "    skipPrint: The time skiped between prints." << endl;
+	cerr << "        -1 for print orbits only." << endl;
+	cerr << "    stepType: 0 for rk45, 1 for bsimp." << endl;
 }
 
 

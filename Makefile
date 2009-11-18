@@ -2,7 +2,7 @@ GCC     = g++
 CFLAGS  = -Wall -lgsl -lm -lgslcblas
 SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp voodoomagic.cpp
 OBJECTS = $(SOURCE: .c=.o)
-VERSION = 0.6
+VERSION = 0.7
 
 all:
 	$(GCC) $(CFLAGS) -c $(SOURCE)

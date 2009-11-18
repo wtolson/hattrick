@@ -1,6 +1,6 @@
 Hat Trick Nbody Simulator
 By William Olson and Jason Dittmann
-Version 0.6
+Version 0.7
 GNU General Public License v3
 http://code.google.com/p/hattrick-nbody/
 
@@ -8,31 +8,49 @@ TO COMPILE:
 	Simpley type 'make'.
 	This uses gcc by default.  To change
 	Edit GCC in the Makefile.
+	
+REQUIREMENTS:
+	GNU Scientific Library:  Routines for integration of ODEs.  On
+	Ubuntu/Debian install with:
+		sudo apt-get install libgsl0-dev
 
 TO RUN:
 	Input format:
-	    ./hattrick baseSys m r
-
-	Example: ./hattrick sunearth.dat 9.5492E-4 5.204267 > out.txt
-		will run the Sun, Earth and a circularized Jupiter.
-	
+		./hattrick baseSys
+		./hattrick baseSys n m1 r1 ... mn rn
 
 	Where:
-	    baseSys: Name of the file specifying the base system.
-	    r: Radius of the perturbing body.
-	    m: Mass of the perturbing body.
+		baseSys: Name of the file specifying the base system.
+		n (optional): Number of perturbing bodies.
+		mn (optional): Mass of the nth perturbing body.
+		rn (optional): Radius of the nth perturbing body.
 
 	Base system file format:
-	    n t0 t1 h0 h1 accr
-	    m1 x1 y1 z1 vx1 vy1 vz1
-	    m2 x2 y2 z2 vx2 vy2 vz2
-		...
-	    mn xn yn zn vxn vyn vzn
+		n t0 t1 h0 h1 accr printSkip stepType
+		m1 x1 y1 z1 vx1 vy1 vz1
+		m2 x2 y2 z2 vx2 vy2 vz2
+			...
+		mn xn yn zn vxn vyn vzn
 
 	Where:
-	    n: Number of bodies in the base system.
-	    t0: Initial system time.
-	    t1: Final system time.
-	    h0: Initial time step.
-	    h1: Max time step.
-	    accr: Accuracy paramater.
+		n: Number of bodies in the base system.
+		t0: Initial system time.
+		t1: Final system time.
+		h0: Initial time step.
+		h1: Max time step.
+		accr: Accuracy paramater.
+		skipPrint: The time skiped between prints.
+			-1 for print orbits only.
+		stepType: 0 for rk45, 1 for bsimp.
+
+Examples:
+	./hattrick
+		Will print the help shown above.
+		
+	./hattrick sunearth.dat
+		This will run a integration of the Sun and Earth.
+	
+	
+	./hattrick sunearth.dat 1 9.5492E-4 5.204267 > out.txt
+		This will run a integration of the Sun, Earth and a circularized
+		Jupiter.

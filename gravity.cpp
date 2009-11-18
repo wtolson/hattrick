@@ -46,6 +46,27 @@ func (double t, const double y[], double f[],
 }
 
 int
+jacnot (double t, const double y[], double *dfdy,
+		double dfdt[], void *params)
+{
+	hatparams hp = *(hatparams *) params;
+	int N = hp.N;
+	
+	gsl_matrix_view dfdy_mat
+		= gsl_matrix_view_array (dfdy, 9*N, 9*N);
+	gsl_matrix * m = &dfdy_mat.matrix;
+	gsl_matrix_set_zero (m);
+
+	for (int i=0; i<9*N; i++)
+	{
+		dfdt[i] = 0.0;
+	}
+
+	return GSL_SUCCESS;
+}
+
+
+int
 jac (double t, const double y[], double *dfdy,
      double dfdt[], void *params)
 {
@@ -55,8 +76,8 @@ jac (double t, const double y[], double *dfdy,
 	gsl_matrix_view dfdy_mat
 		= gsl_matrix_view_array (dfdy, 9*N, 9*N);
 	gsl_matrix * m = &dfdy_mat.matrix;
-
-
+	gsl_matrix_set_zero (m);
+	
 
 	for (int i=0; i<9*N; i++)
 	{

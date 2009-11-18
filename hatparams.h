@@ -24,14 +24,14 @@
 class hatparams
 {
 	public:
-		int N;
-		double * M;
-		double k;
-		double G;
-		double * y;
-		hatparams(int argc, char** argv, double * t, double * t1,
-				  double * h0, double * h1, double * accr);
+		int N, stepType;
+		double k, G;
+		double *M, *y;
+		double t0, t1, h0, h1, accr, printSkip;
+		hatparams(int argc, char** argv);
 		bool success() {return SUCCESS;};
+		bool orbits() {return (printSkip==-1);};
+		void print(double t);
 					
 	private:		
 		bool SUCCESS;

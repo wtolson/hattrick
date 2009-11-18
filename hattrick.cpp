@@ -34,56 +34,59 @@ using namespace std;
 
 int main (int argc, char** argv)
 {
-	double t, t1, h0, h1, accr;
-
-	hatparams hp = hatparams (argc, argv, &t, &t1, &h0, &h1, &accr);
+	hatparams hp = hatparams (argc, argv);
 	if (!hp.success()) return 1;
+	
+	const gsl_odeiv_step_type * T;
 
-	const gsl_odeiv_step_type * T
-		= gsl_odeiv_step_rkf45;
-		//= gsl_odeiv_step_bsimp;
+	switch (hp.stepType) {
+		case 0:
+			T = gsl_odeiv_step_rkf45;
+			break;
+			
+		case 1:
+			T = gsl_odeiv_step_bsimp;
+			break;
+			
+		default:
+			T = gsl_odeiv_step_rkf45;
+	}
 
 	gsl_odeiv_step * s
 		= gsl_odeiv_step_alloc (T, 9*hp.N);
 	gsl_odeiv_control * c
-		= gsl_odeiv_control_y_new (accr, 0.0);
+		= gsl_odeiv_control_y_new (hp.accr, 0.0);
 	gsl_odeiv_evolve * e
 		= gsl_odeiv_evolve_alloc (9*hp.N);
 
 
-	gsl_odeiv_system sys = {func, jac, 9*hp.N, &hp};
-	//gsl_odeiv_system sys = {func, NULL, 9*hp.N, &hp};
+	gsl_odeiv_system sys = {func, jacnot, 9*hp.N, &hp};
 	
-	// Initial print out.
-	cout << t;
-	for(int i = 0; i < 9*hp.N; i++) {
-		if (i%3!=2) cout << " " << hp.y[i];
-	}
-	cout << endl;
-	
-
-	double h=h0, x=0.0, x0=0.0;
+	double t=hp.t0, h=hp.h0, x=0.0, tPrint=hp.printSkip;
 
 	sacrificeChicken();
+	
+	// Initial print out.
+	hp.print(t);
 
-	while (t < t1)
+	while (t < hp.t1)
 	{
-		x0 = x;
-		h0 = h;
-		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, t1, &h, hp.y);
+		double x0 = x;//, h0 = h;
+		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, hp.t1, &h, hp.y);
 
 		if (status != GSL_SUCCESS)
 			break;
 		
-		h = min(h, h1);
+		h = min(h, hp.h1);
 		
 		x = hp.y[12] - hp.y[3];
-		if(x>=0.0 && x0<0.0) {
-			cout << t << " " << h0;
-			for(int i = 0; i < 9*hp.N; i++) {
-				if (i%3!=2) cout << " " << hp.y[i];
-			}
-			cout << endl;
+		if(hp.orbits() && x>=0.0 && x0<0.0) {
+			hp.print(t);
+		}
+		
+		if(!hp.orbits() && t >= tPrint) {
+			tPrint += hp.printSkip;
+			hp.print(t);
 		}
 	}
 
