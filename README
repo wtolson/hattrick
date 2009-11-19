@@ -5,7 +5,7 @@ GNU General Public License v3
 http://code.google.com/p/hattrick-nbody/
 
 TO COMPILE:
-	Simpley type 'make'.
+	Simply type 'make'.
 	This uses gcc by default.  To change
 	Edit GCC in the Makefile.
 	
