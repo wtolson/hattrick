@@ -28,23 +28,30 @@ class hatparams
 		double k, G;
 		double *M, *y;
 		double t0, t1, h0, h1, accr, printSkip;
+		bool SUCCESS;
 		hatparams(int argc, char** argv);
-		bool success() {return SUCCESS;};
 		bool orbits() {return (printSkip==-1.0);};
 		void print(double t);
-		double x (int i, int j) { return y[9*i + 3*j]; };
-		double v (int i, int j) { return y[9*i + 3*j + 1]; };
+		double x (int i, int k) { return y[9*i + 3*k]; };
+		double x (int i, int k, const double y[]) { return y[9*i + 3*k]; };
+		double v (int i, int k) { return y[9*i + 3*k + 1]; };
+		double v (int i, int k, const double y[]) { return y[9*i + 3*k + 1]; };
 		double r (int i, int j) {
-			return sqrt( this->xHat(i,j,1)*this->xHat(i,j,1) +
-						 this->xHat(i,j,2)*this->xHat(i,j,2) +
-						 this->xHat(i,j,3)*this->xHat(i,j,3) )
+			return sqrt( this->xHat(i,j,0)*this->xHat(i,j,0) +
+						 this->xHat(i,j,1)*this->xHat(i,j,1) +
+						 this->xHat(i,j,2)*this->xHat(i,j,2) )
+			;};
+		double r (int i, int j, const double y[]) {
+			return sqrt( this->xHat(i,j,0,y)*this->xHat(i,j,0,y) +
+						 this->xHat(i,j,1,y)*this->xHat(i,j,1,y) +
+						 this->xHat(i,j,2,y)*this->xHat(i,j,2,y) )
 			;};
 		double xHat (int i, int j, int k) { return (this->x(i,k) - this->x(j,k));};
-		int vi (int i, int j) { return (9*i + 3*j); };
-		int ai (int i, int j) { return (9*i + 3*j + 1); };
+		double xHat (int i, int j, int k, const double y[]) { return (this->x(i,k,y) - this->x(j,k,y));};
+		int vi (int i, int k) { return (9*i + 3*k); };
+		int ai (int i, int k) { return (9*i + 3*k + 1); };
 					
 	private:		
-		bool SUCCESS;
 		void printHelp();
 };
 

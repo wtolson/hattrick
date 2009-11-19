@@ -35,7 +35,7 @@ using namespace std;
 int main (int argc, char** argv)
 {
 	hatparams hp = hatparams (argc, argv);
-	if (!hp.success()) return 1;
+	if (!hp.SUCCESS) return 1;
 	
 	const gsl_odeiv_step_type * T;
 
@@ -60,7 +60,7 @@ int main (int argc, char** argv)
 		= gsl_odeiv_evolve_alloc (9*hp.N);
 
 
-	gsl_odeiv_system sys = {functwo, jacnot, 9*hp.N, &hp};
+	gsl_odeiv_system sys = {func, jacnot, 9*hp.N, &hp};
 	
 	double t=hp.t0, h=hp.h0, x=0.0, tPrint=hp.printSkip;
 

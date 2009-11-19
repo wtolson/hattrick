@@ -86,31 +86,18 @@ hatparams::hatparams(int argc, char** argv)
 	{
 		ifs >> M[i];
 		M[i] *= G;
-		ifs >> y[9*i];
-		ifs >> y[9*i + 3];
-		ifs >> y[9*i + 6];
-		ifs >> y[9*i + 1];
-		ifs >> y[9*i + 4];
-		ifs >> y[9*i + 7];
-		y[9*i + 2] = 0.0;
-		y[9*i + 5] = 0.0;
-		y[9*i + 8] = 0.0;
+		for(int k=0; k<3; k++) ifs >> y[this->vi(i,k)];
+		for(int k=0; k<3; k++) ifs >> y[this->ai(i,k)];
+		for(int k=0; k<3; k++) y[9*i + 3*k + 2] = 0.0;
 	}
 	ifs.close();
 	
 	for(int i=n1; i<N; i++) {
-		M[i] = G*atof(argv[3+2*(i-n1)]);// M
-		y[9*i] = atof(argv[4+2*(i-n1)]);// x
-		y[9*i + 1] = 0.0;				// vx
-		y[9*i + 2] = 0.0;				// space
-		y[9*i + 3] = 0.0;				// y
-		y[9*i + 4] = sqrt(M[0]/y[9*i]); // vy
-		y[9*i + 5] = 0.0;				// space
-		y[9*i + 6] = 0.0;				// z
-		y[9*i + 7] = 0.0;				// vz
-		y[9*i + 8] = 0.0;				// space
-	}
-	
+		M[i] = G*atof(argv[3+2*(i-n1)]);  // M
+		for (int j=0; j<9; j++) y[9*i + j] = 0.0;
+		y[9*i] = atof(argv[4+2*(i-n1)]);  // x
+		y[9*i + 4] = sqrt(M[0]/y[9*i]);   // vy
+	}	
 }
 
 void hatparams::print(double t) {

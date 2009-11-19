@@ -15,55 +15,21 @@ int
 func (double t, const double y[], double f[],
 	  void *params)
 {
-	hatparams hp = *(hatparams *) params;
-	int N = hp.N;
-	double * M = hp.M;
-	
-	for(int i=0; i<9*N; i++)
-	{
-		if ((i%9%3) == 0)
-		{
-			f[i] = y[i+1];
-		} else if ((i%9%3) == 1) {
-			f[i] = 0;
-			for(int j=(i%9); j<9*N; j+=9){
-				if (i/9!=j/9)
-				{
-					double x[3];
-					x[0] = y[9*(j/9)] - y[9*(i/9)];
-					x[1] = y[9*(j/9)+3] - y[9*(i/9)+3];
-					x[2] = y[9*(j/9)+6] - y[9*(i/9)+6];
-					double r = sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
-
-					f[i] += M[j/9] * (y[j-1]-y[i-1]) / (r*r*r);
-				}
-			}
-		} else {
-			f[i] = 0.0;
-		}
-	}
-	return GSL_SUCCESS;
-}
-
-int
-functwo (double t, const double y[], double f[],
-	  void *params)
-{
 	hatparams * hp = (hatparams *) params;
 	int N = hp->N;
 	
 	for(int i=0; i<9*N; i++) f[i] = 0.0;
 	
-	for (int i=0; i<N; i++) {
+	for (int i=1; i<N; i++) {
 		for (int j=0; j<i; j++) {
 			for(int k=0; k<3; k++) {
 				// Set velocities.
-				f[hp->vi(i,k)] = hp->v(i,k);
-				f[hp->vi(j,k)] = hp->v(j,k);
+				f[hp->vi(i,k)] = hp->v(i,k,y);
+				f[hp->vi(j,k)] = hp->v(j,k,y);
 				
 				// Set accelerations.
-				double r = hp->r(i,j);
-				double ftemp = hp->xHat(i,j,k) / (r*r*r);
+				double r = hp->r(i,j,y);
+				double ftemp = hp->xHat(i,j,k,y) / (r*r*r);
 				f[hp->ai(i,k)] -= hp->M[j]*ftemp;
 				f[hp->ai(j,k)] += hp->M[i]*ftemp;
 			}
