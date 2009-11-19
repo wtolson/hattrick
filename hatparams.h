@@ -34,8 +34,12 @@ class hatparams
 		void print(double t);
 		double x (int i, int j) { return y[9*i + 3*j]; };
 		double v (int i, int j) { return y[9*i + 3*j + 1]; };
-		double r (int i, int j);
-		double xHat (int i, int j);
+		double r (int i, int j) {
+			return sqrt( this->xHat(i,j,1)*this->xHat(i,j,1) +
+						 this->xHat(i,j,2)*this->xHat(i,j,2) +
+						 this->xHat(i,j,3)*this->xHat(i,j,3) )
+			;};
+		double xHat (int i, int j, int k) { return (this->x(i,k) - this->x(j,k));};
 					
 	private:		
 		bool SUCCESS;
