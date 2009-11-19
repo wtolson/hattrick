@@ -46,6 +46,34 @@ func (double t, const double y[], double f[],
 }
 
 int
+functwo (double t, const double y[], double f[],
+	  void *params)
+{
+	hatparams * hp = (hatparams *) params;
+	int N = hp->N;
+	
+	for(int i=0; i<9*N; i++) f[i] = 0.0;
+	
+	for (int i=0; i<N; i++) {
+		for (int j=0; j<i; j++) {
+			for(int k=0; k<3; k++) {
+				// Set velocities.
+				f[hp->vi(i,k)] = hp->v(i,k);
+				f[hp->vi(j,k)] = hp->v(j,k);
+				
+				// Set accelerations.
+				double r = hp->r(i,j);
+				double ftemp = hp->xHat(i,j,k) / (r*r*r);
+				f[hp->ai(i,k)] -= hp->M[j]*ftemp;
+				f[hp->ai(j,k)] += hp->M[i]*ftemp;
+			}
+		}
+	}
+	
+	return GSL_SUCCESS;
+}
+
+int
 jacnot (double t, const double y[], double *dfdy,
 		double dfdt[], void *params)
 {

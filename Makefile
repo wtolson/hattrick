@@ -1,5 +1,5 @@
 GCC     = g++
-CFLAGS  = -Wall -lgsl -lm -lgslcblas
+CFLAGS  = -Wall -O3 -lgsl -lm -lgslcblas
 SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp voodoomagic.cpp
 OBJECTS = $(SOURCE: .c=.o)
 VERSION = 0.7

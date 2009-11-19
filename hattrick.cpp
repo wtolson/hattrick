@@ -60,7 +60,7 @@ int main (int argc, char** argv)
 		= gsl_odeiv_evolve_alloc (9*hp.N);
 
 
-	gsl_odeiv_system sys = {func, jacnot, 9*hp.N, &hp};
+	gsl_odeiv_system sys = {functwo, jacnot, 9*hp.N, &hp};
 	
 	double t=hp.t0, h=hp.h0, x=0.0, tPrint=hp.printSkip;
 

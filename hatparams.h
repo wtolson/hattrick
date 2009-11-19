@@ -40,6 +40,8 @@ class hatparams
 						 this->xHat(i,j,3)*this->xHat(i,j,3) )
 			;};
 		double xHat (int i, int j, int k) { return (this->x(i,k) - this->x(j,k));};
+		int vi (int i, int j) { return (9*i + 3*j); };
+		int ai (int i, int j) { return (9*i + 3*j + 1); };
 					
 	private:		
 		bool SUCCESS;
