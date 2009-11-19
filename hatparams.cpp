@@ -113,6 +113,15 @@ hatparams::hatparams(int argc, char** argv)
 	
 }
 
+double hatparms::r (int i, int j) {
+	return 0.0;
+}
+
+
+double hatparms::xHat (int i, int j) {
+	return 0.0;
+}
+
 void hatparams::print(double t) {
 	cout << t << " " << h0;
 	for(int i = 0; i < 9*N; i++) {

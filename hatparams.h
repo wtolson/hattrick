@@ -32,6 +32,10 @@ class hatparams
 		bool success() {return SUCCESS;};
 		bool orbits() {return (printSkip==-1.0);};
 		void print(double t);
+		double x (int i, int j) { return y[9*i + 3*j]; };
+		double v (int i, int j) { return y[9*i + 3*j + 1]; };
+		double r (int i, int j);
+		double xHat (int i, int j);
 					
 	private:		
 		bool SUCCESS;
