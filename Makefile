@@ -2,7 +2,7 @@ GCC     = g++
 CFLAGS  = -Wall -O3 -lgsl -lm -lgslcblas
 SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp voodoomagic.cpp
 OBJECTS = $(SOURCE: .c=.o)
-VERSION = 0.7
+VERSION = 0.8
 
 all:
 	$(GCC) $(CFLAGS) -c $(SOURCE)
@@ -12,4 +12,4 @@ package:
 	tar -czf hattrick-$(VERSION).tar.gz *
 
 clean:
-	rm *.o
+	rm -f *.o

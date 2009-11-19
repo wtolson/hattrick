@@ -1,6 +1,6 @@
 Hat Trick Nbody Simulator
 By William Olson and Jason Dittmann
-Version 0.7
+Version 0.8
 GNU General Public License v3
 http://code.google.com/p/hattrick-nbody/
 
@@ -39,7 +39,7 @@ TO RUN:
 		h0: Initial time step.
 		h1: Max time step.
 		accr: Accuracy paramater.
-		skipPrint: The time skiped between prints.
+		printSkip: The time skiped between prints.
 			-1 for print orbits only.
 		stepType: 0 for rk45, 1 for bsimp.
 
@@ -48,9 +48,8 @@ Examples:
 		Will print the help shown above.
 		
 	./hattrick sunearth.dat
-		This will run a integration of the Sun and Earth.
-	
+		This will run a integration of the Sun and Earth.	
 	
 	./hattrick sunearth.dat 1 9.5492E-4 5.204267 > out.txt
 		This will run a integration of the Sun, Earth and a circularized
-		Jupiter.
+		Jupiter and direct the ouput into 'out.txt'.
