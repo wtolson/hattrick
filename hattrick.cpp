@@ -44,7 +44,7 @@ int main (int argc, char** argv)
 
 	switch (hp.stepType) {
 		case 0:
-			T = gsl_odeiv_step_rkf45;
+			T = gsl_odeiv_step_rk8pd;
 			break;
 			
 		case 1:
@@ -78,10 +78,12 @@ int main (int argc, char** argv)
 		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, hp.t1,
 											 &h, hp.y);
 
+		
+
 		if (status != GSL_SUCCESS)
 			break;
 		
-		h = min(h, hp.h1);
+		//h = min(h, hp.h1);
 		
 		x = hp.y[12] - hp.y[3];
 		if(hp.orbits() && x>=0.0 && x0<0.0) {

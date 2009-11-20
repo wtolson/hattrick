@@ -82,6 +82,14 @@ int jac (double t, const double y[], double *dfdy, double dfdt[],
 		}
 	}
 	
+	for (int i=0; i<9*N; i++) {
+		for (int j=0; j<9*N; j++) {
+			cout << gsl_matrix_get (m, i, j) << "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	
 	for(int i=0; i<9*N; i++) dfdt[i] = 0.0;
 	
 	for (int i=1; i<N; i++) {
