@@ -1,5 +1,5 @@
 GCC     = icc
-CFLAGS  = -Wall -lgsl -lm
+CFLAGS  = -Wall -L/uaopt/gsl/1.10/include/ -lgsl -lm 
 SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp voodoomagic.cpp
 OBJECTS = $(SOURCE: .c=.o)
 
