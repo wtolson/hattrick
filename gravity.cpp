@@ -40,108 +40,61 @@ func (double t, const double y[], double f[],
 }
 
 int
-jacnot (double t, const double y[], double *dfdy,
+jac (double t, const double y[], double *dfdy,
 		double dfdt[], void *params)
 {
-	hatparams hp = *(hatparams *) params;
-	int N = hp.N;
+	hatparams * hp = (hatparams *) params;
+	int N = hp->N;
 	
 	gsl_matrix_view dfdy_mat
 		= gsl_matrix_view_array (dfdy, 9*N, 9*N);
 	gsl_matrix * m = &dfdy_mat.matrix;
 	gsl_matrix_set_zero (m);
 
-	for (int i=0; i<9*N; i++)
-	{
-		dfdt[i] = 0.0;
-	}
-
-	return GSL_SUCCESS;
-}
-
-
-int
-jac (double t, const double y[], double *dfdy,
-     double dfdt[], void *params)
-{
-	hatparams hp = *(hatparams *) params;
-	int N = hp.N;
-	double * M = hp.M;
-	gsl_matrix_view dfdy_mat
-		= gsl_matrix_view_array (dfdy, 9*N, 9*N);
-	gsl_matrix * m = &dfdy_mat.matrix;
-	gsl_matrix_set_zero (m);
-	
-
-	for (int i=0; i<9*N; i++)
-	{
-		for (int j=0; j<9*N; j++)
-		{
-			if ((i%9%2) == 0)
-			{
-				if (i+1 == j)
-				{
-					gsl_matrix_set (m, i, j, 1.0);
-				} else {
-					gsl_matrix_set (m, i, j, 0.0);
-				}
-			} else {
-				if ((j%9%2) == 1) {
-					gsl_matrix_set (m, i, j, 0.0);
-				} else if (i == j+1){
-					double ftemp = 0;
-					for(int k=(i%9); k<9*N; k+=9)
-					{
-						if (i/9!=k/9)
-						{
-							double x[3];
-							x[0] = y[9*(k/9)] - y[9*(i/9)];
-							x[1] = y[9*(k/9)+3] - y[9*(i/9)+3];
-							x[2] = y[9*(k/9)+6] - y[9*(i/9)+6];
-							double r = sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
-
-							ftemp -= 3 * M[j/9] * (y[k-1]-y[i-1]) * (y[k-1]-y[i-1]) / (r*r*r*r*r);
-							ftemp += M[j/9] * y[i-1] / (r*r*r);
-						}
-					}
-					gsl_matrix_set (m, i, j, ftemp);
-				} else if (i/9 == j/9) {
-					double ftemp = 0;
-					for(int k=(i%9); k<9*N; k+=9)
-					{
-						if (i/9!=k/9)
-						{
-							double x[3];
-							x[0] = y[9*(k/9)] - y[9*(i/9)];
-							x[1] = y[9*(k/9)+3] - y[9*(i/9)+3];
-							x[2] = y[9*(k/9)+6] - y[9*(i/9)+6];
-							double r = sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
-							ftemp -= 3 * M[j/9] * (y[k-1]-y[i-1]) * (y[9*(i/9) + j%9]-y[j]) / (r*r*r*r*r);
-						}
-					}
-					gsl_matrix_set (m, i, j, ftemp);
-				} else if (i%9 == (j+1)%9) {
-						double x[3];
-						x[0] = y[9*(j/9)] - y[9*(i/9)];
-						x[1] = y[9*(j/9)+3] - y[9*(i/9)+3];
-						x[2] = y[9*(j/9)+6] - y[9*(i/9)+6];
-						double r = sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
-						gsl_matrix_set (m, i, j, (M[j/9]/(r*r*r)) * (3*(y[j]-y[i-1])*(y[j]-y[i-1])/(r*r) - y[j]));
-				} else {
-					double x[3];
-					x[0] = y[9*(j/9)] - y[9*(i/9)];
-					x[1] = y[9*(j/9)+3] - y[9*(i/9)+3];
-					x[2] = y[9*(j/9)+6] - y[9*(i/9)+6];
-					double r = sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
-					gsl_matrix_set (m, i, j, (M[j/9]/(r*r*r)) * (3*(y[9*(j/9) + (i-1)%9]-y[i-1])*(y[j]-y[9*(i/9) + j%9])/(r*r)));
-				}
+	double mdtemp[N][3][3];
+	for (int i=0; i<N; i++) {
+		for(int k=0; k<3; k++) {
+				for(int l=0; l<3; l++) mdtemp[i][k][l] = 0.0;
+		}
+		
+		for (int j=0; j<i; j++) {
+			for(int k=0; k<3; k++) {
+				for(int l=0; l<3; l++) {
+					double r = hp->r(i,j,y);
+					double mtemp = - hp->xHat(i,j,k,y) * hp->xHat(i,j,l,y) / (r*r*r*r*r);
+					if (k==l) mtemp += 1/(r*r*r);
+					gsl_matrix_set (m, hp->ai(i,k), hp->vi(j,l), hp->M[j]*mtemp);
+					gsl_matrix_set (m, hp->ai(j,k), hp->vi(i,l), hp->M[i]*mtemp);
+					mdtemp[i][k][l] -= hp->M[j]*mtemp;
+					mdtemp[j][k][l] -= hp->M[i]*mtemp;
+				}			
 			}
 		}
 	}
-
-	for (int i=0; i<9*N; i++)
-	{
-		dfdt[i] = 0.0;
+	
+	for (int i=0; i<N; i++) {
+		for(int k=0; k<3; k++) {
+				for(int l=0; l<3; l++) gsl_matrix_set (m, hp->ai(i,k), hp->vi(i,l), mdtemp[i][k][l]);
+		}
+	}
+	
+	for(int i=0; i<9*N; i++) dfdt[i] = 0.0;
+	
+	for (int i=1; i<N; i++) {
+		for (int j=0; j<i; j++) {
+			for(int k=0; k<3; k++) {
+				// Set accelerations.
+				double r = hp->r(i,j,y);
+				double ftemp = hp->xHat(i,j,k,y) / (r*r*r);
+				dfdt[hp->vi(i,k)] -= hp->M[j]*ftemp;
+				dfdt[hp->vi(j,k)] += hp->M[i]*ftemp;
+				
+				// Set Jerks.
+				ftemp = ( hp->vHat(i,j,k,y) - 3 * ( hp->rDotv(i,j,y) / (r*r)) * hp->xHat(i,j,k,y)) / (r*r*r);
+				dfdt[hp->ai(i,k)] -= hp->M[j]*ftemp;
+				dfdt[hp->ai(j,k)] += hp->M[i]*ftemp;
+			}
+		}
 	}
 
 	return GSL_SUCCESS;

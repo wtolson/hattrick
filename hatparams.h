@@ -48,6 +48,18 @@ class hatparams
 			;};
 		double xHat (int i, int j, int k) { return (this->x(i,k) - this->x(j,k));};
 		double xHat (int i, int j, int k, const double y[]) { return (this->x(i,k,y) - this->x(j,k,y));};
+		double vHat (int i, int j, int k) { return (this->v(i,k) - this->v(j,k));};
+		double vHat (int i, int j, int k, const double y[]) { return (this->v(i,k,y) - this->v(j,k,y));};
+		double rDotv (int i, int j) {
+			return ( this->xHat(i,j,0)*this->vHat(i,j,0) +
+					 this->xHat(i,j,1)*this->vHat(i,j,1) +
+					 this->xHat(i,j,2)*this->vHat(i,j,2) )
+			;};
+		double rDotv (int i, int j, const double y[]) {
+			return ( this->xHat(i,j,0,y)*this->vHat(i,j,0,y) +
+					 this->xHat(i,j,1,y)*this->vHat(i,j,1,y) +
+					 this->xHat(i,j,2,y)*this->vHat(i,j,2,y) )
+			;};
 		int vi (int i, int k) { return (9*i + 3*k); };
 		int ai (int i, int k) { return (9*i + 3*k + 1); };
 					
