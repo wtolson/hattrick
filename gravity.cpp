@@ -1,5 +1,11 @@
-/*
- * The System of equations describing the gravity between the particles. 
+/***********************************************************************
+ * gravity.cpp
+ *
+ * Copyright 2009 William Olson <wtolson@gmail.com>
+ * GNU General Public License v3
+ * 
+ * The System of equations describing the forces between the particles.
+ * 
  */
 
 #include <iostream>
@@ -11,9 +17,7 @@
 
 using namespace std;
 
-int
-func (double t, const double y[], double f[],
-	  void *params)
+int func (double t, const double y[], double f[], void *params)
 {
 	hatparams * hp = (hatparams *) params;
 	int N = hp->N;
@@ -39,9 +43,8 @@ func (double t, const double y[], double f[],
 	return GSL_SUCCESS;
 }
 
-int
-jac (double t, const double y[], double *dfdy,
-		double dfdt[], void *params)
+int jac (double t, const double y[], double *dfdy, double dfdt[],
+		 void *params)
 {
 	hatparams * hp = (hatparams *) params;
 	int N = hp->N;
@@ -74,7 +77,8 @@ jac (double t, const double y[], double *dfdy,
 	
 	for (int i=0; i<N; i++) {
 		for(int k=0; k<3; k++) {
-				for(int l=0; l<3; l++) gsl_matrix_set (m, hp->ai(i,k), hp->vi(i,l), mdtemp[i][k][l]);
+				for(int l=0; l<3; l++)
+					gsl_matrix_set (m, hp->ai(i,k), hp->vi(i,l), mdtemp[i][k][l]);
 		}
 	}
 	
@@ -90,7 +94,7 @@ jac (double t, const double y[], double *dfdy,
 				dfdt[hp->vi(j,k)] += hp->M[i]*ftemp;
 				
 				// Set Jerks.
-				ftemp = ( hp->vHat(i,j,k,y) - 3 * ( hp->rDotv(i,j,y) / (r*r)) * hp->xHat(i,j,k,y)) / (r*r*r);
+				ftemp = ( hp->vHat(i,j,k,y) - 3 * ( hp->rDotv(i,j,y) / (r*r)) * hp->xHat(i,j,k,y) ) / (r*r*r);
 				dfdt[hp->ai(i,k)] -= hp->M[j]*ftemp;
 				dfdt[hp->ai(j,k)] += hp->M[i]*ftemp;
 			}
