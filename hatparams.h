@@ -46,15 +46,15 @@ class hatparams
 		};
 		
 		double r (int i, int j) {
-			return sqrt( this->xHat(i,j,0)*this->xHat(i,j,0) +
-						 this->xHat(i,j,1)*this->xHat(i,j,1) +
-						 this->xHat(i,j,2)*this->xHat(i,j,2) );
+			return sqrt( (this->xHat(i,j,0)*this->xHat(i,j,0)) +
+						 (this->xHat(i,j,1)*this->xHat(i,j,1)) +
+						 (this->xHat(i,j,2)*this->xHat(i,j,2)) );
 		};
 		
 		double r (int i, int j, const double y[]) {
-			return sqrt( this->xHat(i,j,0,y)*this->xHat(i,j,0,y) +
-						 this->xHat(i,j,1,y)*this->xHat(i,j,1,y) +
-						 this->xHat(i,j,2,y)*this->xHat(i,j,2,y) );
+			return sqrt( (this->xHat(i,j,0,y)*this->xHat(i,j,0,y)) +
+						 (this->xHat(i,j,1,y)*this->xHat(i,j,1,y)) +
+						 (this->xHat(i,j,2,y)*this->xHat(i,j,2,y)) );
 		};
 		
 		double xHat (int i, int j, int k) {
@@ -74,15 +74,15 @@ class hatparams
 		};
 		
 		double rDotv (int i, int j) {
-			return ( this->xHat(i,j,0)*this->vHat(i,j,0) +
-					 this->xHat(i,j,1)*this->vHat(i,j,1) +
-					 this->xHat(i,j,2)*this->vHat(i,j,2) );
+			return ( (this->xHat(i,j,0)*this->vHat(i,j,0)) +
+					 (this->xHat(i,j,1)*this->vHat(i,j,1)) +
+					 (this->xHat(i,j,2)*this->vHat(i,j,2)) );
 		};
 		
 		double rDotv (int i, int j, const double y[]) {
-			return ( this->xHat(i,j,0,y)*this->vHat(i,j,0,y) +
-					 this->xHat(i,j,1,y)*this->vHat(i,j,1,y) +
-					 this->xHat(i,j,2,y)*this->vHat(i,j,2,y) );
+			return ( (this->xHat(i,j,0,y)*this->vHat(i,j,0,y)) +
+					 (this->xHat(i,j,1,y)*this->vHat(i,j,1,y)) +
+					 (this->xHat(i,j,2,y)*this->vHat(i,j,2,y)) );
 		};
 		
 		int vi (int i, int k) {
