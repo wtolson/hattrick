@@ -33,6 +33,10 @@
 #include "hatparams.h"
 #include "voodoomagic.h"
 
+// Nothing to see here.
+#pragma warning (disable:193)
+#pragma warning (default:193)
+
 using namespace std;
 
 int main (int argc, char** argv)
