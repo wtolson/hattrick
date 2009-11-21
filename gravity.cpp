@@ -87,8 +87,8 @@ int jac (double t, const double y[], double *dfdy, double dfdt[],
 		}
 	}
 	/*
-	for (int i=0; i<9*N; i++) {
-		for (int j=0; j<9*N; j++) {
+	for (int i=0; i<6*N; i++) {
+		for (int j=0; j<6*N; j++) {
 			cout << gsl_matrix_get (m, i, j) << "\t";
 		}
 		cout << endl;

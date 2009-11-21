@@ -86,6 +86,7 @@ int main (int argc, char** argv)
 			break;
 		
 		//h = min(h, hp.h1);
+		h = hp.h0;
 		
 		x = hp.xHat(1,0,1);
 		if(hp.orbits() && x>=0.0 && x0<0.0) {
