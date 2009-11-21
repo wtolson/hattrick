@@ -58,14 +58,14 @@ int main (int argc, char** argv)
 	}
 
 	gsl_odeiv_step * s
-		= gsl_odeiv_step_alloc (T, 9*hp.N);
+		= gsl_odeiv_step_alloc (T, 6*hp.N);
 	gsl_odeiv_control * c
 		= gsl_odeiv_control_y_new (hp.accr, 0.0);
 	gsl_odeiv_evolve * e
-		= gsl_odeiv_evolve_alloc (9*hp.N);
+		= gsl_odeiv_evolve_alloc (6*hp.N);
 
 
-	gsl_odeiv_system sys = {func, jac, 9*hp.N, &hp};
+	gsl_odeiv_system sys = {func, jac, 6*hp.N, &hp};
 	
 	double t=hp.t0, h=hp.h0, x=0.0, tPrint=hp.printSkip;
 
@@ -87,7 +87,7 @@ int main (int argc, char** argv)
 		
 		//h = min(h, hp.h1);
 		
-		x = hp.y[12] - hp.y[3];
+		x = hp.xHat(1,0,1);
 		if(hp.orbits() && x>=0.0 && x0<0.0) {
 			hp.print(t);
 		}

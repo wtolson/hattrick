@@ -18,20 +18,20 @@ hatparams::hatparams(int argc, char** argv)
 {
 	k = 0.01720209895;
 	G = k*k;
-	this->SUCCESS = true;
+	SUCCESS = true;
 	
 	if (argc == 1) {
-		this->SUCCESS = false;
+		SUCCESS = false;
 		printHelp();
 		return;
 	}
 	
-	this->SUCCESS = true;
+	SUCCESS = true;
 	
 	ifstream ifs ( argv[1] , ifstream::in );
 	
 	if (!ifs.is_open()) {
-		this->SUCCESS = false;
+		SUCCESS = false;
 		cerr << "The file " << argv[1] << " does not exist." << endl;
 		printHelp();
 		return;
@@ -49,7 +49,7 @@ hatparams::hatparams(int argc, char** argv)
 	ifs >> stepType;
 	
 	if (stepType!=0 && stepType!=1) {
-		this->SUCCESS = false;
+		SUCCESS = false;
 		cerr << "Invalid integration step type." << endl;
 		printHelp();
 		return;
@@ -59,7 +59,7 @@ hatparams::hatparams(int argc, char** argv)
 		n2 = atoi(argv[2]);
 	
 	if (argc >= 3 && argc != (3+2*n2)) {
-		this->SUCCESS = false;
+		SUCCESS = false;
 		if (argc > (3+2*n2))
 			cerr << "Too many arguments." << endl;
 		if (argc < (3+2*n2))
@@ -69,30 +69,33 @@ hatparams::hatparams(int argc, char** argv)
 	}
 	
 	N = n1+n2;
-	y = new double[9*N];
+	y = new double[6*N];
 	M = new double[N];
 	for(int i = 0; i < n1; i++)
 	{
 		ifs >> M[i];
 		M[i] *= G;
-		for(int k=0; k<3; k++) ifs >> y[this->vi(i,k)];
-		for(int k=0; k<3; k++) ifs >> y[this->ai(i,k)];
-		for(int k=0; k<3; k++) y[9*i + 3*k + 2] = 0.0;
+		for(int k=0; k<3; k++) ifs >> y[yx(i,k)];
+		for(int k=0; k<3; k++) ifs >> y[yv(i,k)];
 	}
 	ifs.close();
 	
 	for(int i=n1; i<N; i++) {
-		M[i] = G*atof(argv[3+2*(i-n1)]);  // M
-		for (int j=0; j<9; j++) y[9*i + j] = 0.0;
-		y[9*i] = atof(argv[4+2*(i-n1)]);  // x
-		y[9*i + 4] = sqrt(M[0]/y[9*i]);   // vy
+		M[i] = G*atof(argv[3+2*(i-n1)]);            // M
+		for (int k=0; k<3; k++) {
+			y[yx(i,k)] = 0.0;
+			y[yv(i,k)] = 0.0;
+		}
+		y[yx(i,0)] = atof(argv[4+2*(i-n1)]);  // x
+		y[yv(i,1)] = sqrt(M[0]/y[9*i]);       // vy
 	}	
 }
 
 void hatparams::print(double t) {
-	cout << t << " " << h0;
-	for(int i = 0; i < 9*N; i++) {
-		if (i%3!=2) cout << " " << y[i];
+	cout << t << " ";
+	for (int i = 0; i < N; i++) {
+		for (int k = 0; k < 3; k++) cout << " " << x(i,k);
+		for (int k = 0; k < 3; k++) cout << " " << v(i,k);
 	}
 	cout << endl;
 }

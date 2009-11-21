@@ -30,66 +30,80 @@ class hatparams
 		void print(double t);
 		
 		double x (int i, int k) {
-			return y[9*i + 3*k];
+			return y[yx(i,k)];
 		};
 		
 		double x (int i, int k, const double y[]) {
-			return y[9*i + 3*k];
+			return y[yx(i,k)];
 		};
 		
 		double v (int i, int k) {
-			return y[9*i + 3*k + 1];
+			return y[yv(i,k)];
 		};
 		
 		double v (int i, int k, const double y[]) {
-			return y[9*i + 3*k + 1];
+			return y[yv(i,k)];
 		};
 		
 		double r (int i, int j) {
-			return sqrt( (this->xHat(i,j,0)*this->xHat(i,j,0)) +
-						 (this->xHat(i,j,1)*this->xHat(i,j,1)) +
-						 (this->xHat(i,j,2)*this->xHat(i,j,2)) );
+			return sqrt( (xHat(i,j,0)*xHat(i,j,0)) + \
+						 (xHat(i,j,1)*xHat(i,j,1)) + \
+						 (xHat(i,j,2)*xHat(i,j,2)) );
 		};
 		
 		double r (int i, int j, const double y[]) {
-			return sqrt( (this->xHat(i,j,0,y)*this->xHat(i,j,0,y)) +
-						 (this->xHat(i,j,1,y)*this->xHat(i,j,1,y)) +
-						 (this->xHat(i,j,2,y)*this->xHat(i,j,2,y)) );
+			return sqrt( (xHat(i,j,0,y)*xHat(i,j,0,y)) + \
+						 (xHat(i,j,1,y)*xHat(i,j,1,y)) + \
+						 (xHat(i,j,2,y)*xHat(i,j,2,y)) );
 		};
 		
 		double xHat (int i, int j, int k) {
-			return (this->x(i,k) - this->x(j,k));
+			return (x(i,k) - x(j,k));
 		};
 		
 		double xHat (int i, int j, int k, const double y[]) {
-			return (this->x(i,k,y) - this->x(j,k,y));
+			return (x(i,k,y) - x(j,k,y));
 		};
 		
 		double vHat (int i, int j, int k) {
-			return (this->v(i,k) - this->v(j,k));
+			return (v(i,k) - v(j,k));
 		};
 		
 		double vHat (int i, int j, int k, const double y[]) {
-			return (this->v(i,k,y) - this->v(j,k,y));
+			return (v(i,k,y) - v(j,k,y));
 		};
 		
 		double rDotv (int i, int j) {
-			return ( (this->xHat(i,j,0)*this->vHat(i,j,0)) +
-					 (this->xHat(i,j,1)*this->vHat(i,j,1)) +
-					 (this->xHat(i,j,2)*this->vHat(i,j,2)) );
+			return ( (xHat(i,j,0)*vHat(i,j,0)) + \
+					 (xHat(i,j,1)*vHat(i,j,1)) + \
+					 (xHat(i,j,2)*vHat(i,j,2)) );
 		};
 		
 		double rDotv (int i, int j, const double y[]) {
-			return ( (this->xHat(i,j,0,y)*this->vHat(i,j,0,y)) +
-					 (this->xHat(i,j,1,y)*this->vHat(i,j,1,y)) +
-					 (this->xHat(i,j,2,y)*this->vHat(i,j,2,y)) );
+			return ( (xHat(i,j,0,y)*vHat(i,j,0,y)) + \
+					 (xHat(i,j,1,y)*vHat(i,j,1,y)) + \
+					 (xHat(i,j,2,y)*vHat(i,j,2,y)) );
 		};
 		
-		int vi (int i, int k) {
-			return (9*i + 3*k);
+		int yx (int i, int k) {
+			return (6*i + k);
 		};
-		int ai (int i, int k) {
-			return (9*i + 3*k + 1);
+		
+		int yv (int i, int k) {
+			return (6*i + k + 3);
+		};
+		
+		int fv (int i, int k) {
+			return (6*i + k);
+		};
+		
+		int fa (int i, int k) {
+			return (6*i + k + 3);
+		};
+		
+		double delta(int a, int b) {
+			if (a==b) return 1.0;
+			return 0.0;
 		};
 					
 	private:		
