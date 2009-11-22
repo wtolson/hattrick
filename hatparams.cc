@@ -18,6 +18,7 @@ hatparams::hatparams(int argc, char** argv)
 {
 	k = 0.01720209895;
 	G = k*k;
+	orbits = 0;
 	SUCCESS = true;
 	
 	if (argc == 1) {
@@ -41,6 +42,7 @@ hatparams::hatparams(int argc, char** argv)
 	
 	ifs >> n1;
 	ifs >> t0;
+	t = t0;
 	ifs >> t1;
 	ifs >> h0;
 	ifs >> h1;
@@ -48,7 +50,7 @@ hatparams::hatparams(int argc, char** argv)
 	ifs >> printSkip;
 	ifs >> stepType;
 	
-	if (stepType!=0 && stepType!=1) {
+	if (stepType!=0 && stepType!=1 && stepType!=2) {
 		SUCCESS = false;
 		cerr << "Invalid integration step type." << endl;
 		printHelp();
@@ -88,10 +90,25 @@ hatparams::hatparams(int argc, char** argv)
 		}
 		y[yx(i,0)] = atof(argv[4+2*(i-n1)]);  // x
 		y[yv(i,1)] = sqrt(M[0]/y[9*i]);       // vy
-	}	
+	}
+	
+	xLast = xHat(1,0,1);
 }
 
-void hatparams::print(double t) {
+bool hatparams::orbit() {
+	if (printSkip > 0) return false;
+	
+	double xThis = xHat(1,0,1);
+	if (xThis>=0.0 && xLast<0.0)  {
+		orbits++;
+		print();
+	}
+	xLast = xThis;
+	return true;
+}
+
+
+void hatparams::print() {
 	cout << t << " ";
 	for (int i = 0; i < N; i++) {
 		for (int k = 0; k < 3; k++) cout << " " << x(i,k);
@@ -128,7 +145,7 @@ void hatparams::printHelp() {
 	cerr << "    accr: Accuracy paramater." << endl;
 	cerr << "    skipPrint: The time skiped between prints." << endl;
 	cerr << "        -1 for print orbits only." << endl;
-	cerr << "    stepType: 0 for rk45, 1 for bsimp." << endl;
+	cerr << "    stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp." << endl;
 }
 
 

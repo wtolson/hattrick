@@ -45,11 +45,11 @@ int main (int argc, char** argv)
 	const gsl_odeiv_step_type * T;
 
 	switch (hp.stepType) {
-		case 0:
+		case 1:
 			T = gsl_odeiv_step_rk8pd;
 			break;
 			
-		case 1:
+		case 2:
 			T = gsl_odeiv_step_bsimp;
 			break;
 			
@@ -67,35 +67,27 @@ int main (int argc, char** argv)
 
 	gsl_odeiv_system sys = {func, jac, 6*hp.N, &hp};
 	
-	double t=hp.t0, h=hp.h0, x=0.0, tPrint=hp.printSkip;
+	double h=hp.h0, tPrint=hp.printSkip;
 
 	sacrificeChicken();
 	
 	// Initial print out.
-	hp.print(t);
+	hp.print();
 
-	while (t < hp.t1)
+	while (hp.t < hp.t1)
 	{
-		double x0 = x;//, h0 = h;
-		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, hp.t1,
-											 &h, hp.y);
-
-		
+		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &hp.t, hp.t1,
+											 &h, hp.y);	
 
 		if (status != GSL_SUCCESS)
 			break;
 		
 		//h = min(h, hp.h1);
-		h = hp.h0;
+		//h = hp.h0;
 		
-		x = hp.xHat(1,0,1);
-		if(hp.orbits() && x>=0.0 && x0<0.0) {
-			hp.print(t);
-		}
-		
-		if(!hp.orbits() && t >= tPrint) {
+		if(!hp.orbit() && hp.t >= tPrint) {
 			tPrint += hp.printSkip;
-			hp.print(t);
+			hp.print();
 		}
 	}
 

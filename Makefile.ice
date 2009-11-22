@@ -1,13 +1,12 @@
-GCC     = icc
-INCGSL  = /uaopt/gsl/1.10/include/
-LIBGSL  = /uaopt/gsl/1.10/lib/
-CFLAGS  = -Wall -O3 -wd981 -I$(INCGSL) -L$(LIBGSL) -lgsl -lgslcblas -lm 
-SOURCE  = hattrick.cpp gravity.cpp hatparams.cpp voodoomagic.cpp
-OBJECTS = $(SOURCE: .c=.o)
+CXX     = icc
+GSL_INC  = /uaopt/gsl/1.10/include/
+GSL_LIB  = /uaopt/gsl/1.10/lib/
+CXXFLAGS  = -Wall -O3 -wd981 -I$(INCGSL) -L$(LIBGSL) -lgsl -lgslcblas -lm 
+SOURCE  = hattrick.cc gravity.cc hatparams.cc voodoomagic.cc
+OBJECTS = $(SOURCE:.cc=.o)
 
-all:
-	$(GCC) $(CFLAGS) -c $(SOURCE)
-	$(GCC) $(CFLAGS) -o hattrick $(OBJECTS)
+all: $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o hattrick $(OBJECTS)
 
 clean:
 	rm -f *.o

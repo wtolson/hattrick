@@ -18,16 +18,14 @@ class hatparams
 		int N, stepType;
 		double k, G;
 		double *M, *y;
-		double t0, t1, h0, h1, accr, printSkip;
+		double t, t0, t1, h0, h1, accr, printSkip;
 		bool SUCCESS;
 		
 		hatparams(int argc, char** argv);
 		
-		bool orbits() {
-			return (printSkip==-1.0);
-		};
+		bool orbit();
 		
-		void print(double t);
+		void print();
 		
 		double x (int i, int k) {
 			return y[yx(i,k)];
@@ -103,6 +101,8 @@ class hatparams
 									
 	private:		
 		void printHelp();
+		double xLast;
+		int orbits;
 };
 
 #endif /* HATPARAMS_H */ 
