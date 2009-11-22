@@ -5,7 +5,8 @@ CXXFLAGS  = -Wall -O3 -wd981 -I$(GSL_INC) -L$(GSL_LIB) -lgsl -lgslcblas -lm
 SOURCE  = hattrick.cc gravity.cc hatparams.cc voodoomagic.cc
 OBJECTS = $(SOURCE:.cc=.o)
 
-all: $(OBJECTS)
+all:
+	$(CXX) $(CXXFLAGS) -c $(SOURCE)
 	$(CXX) $(CXXFLAGS) -o hattrick $(OBJECTS)
 
 clean:
