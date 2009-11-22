@@ -100,12 +100,7 @@ class hatparams
 		int fa (int i, int k) {
 			return (6*i + k + 3);
 		};
-		
-		double delta(int a, int b) {
-			if (a==b) return 1.0;
-			return 0.0;
-		};
-					
+									
 	private:		
 		void printHelp();
 };

@@ -47,8 +47,7 @@ int func (double t, const double y[], double f[], void *params)
 	return GSL_SUCCESS;
 }
 
-int jac (double t, const double y[], double *dfdy, double dfdt[],
-		 void *params)
+int jac (double t, const double *y, double *dfdy, double *dfdt, void *params)
 {
 	hatparams * hp = (hatparams *) params;
 	int N = hp->N;
@@ -56,45 +55,27 @@ int jac (double t, const double y[], double *dfdy, double dfdt[],
 	gsl_matrix_view dfdy_mat
 		= gsl_matrix_view_array (dfdy, 6*N, 6*N);
 	gsl_matrix * m = &dfdy_mat.matrix;
-	//gsl_matrix_set_zero (m);
-
-	double mdtemp[N][3][3];
+	gsl_matrix_set_zero (m);
+	
 	for (int i=0; i<N; i++) {
-		for(int k=0; k<3; k++) {
-				for(int l=0; l<3; l++) mdtemp[i][k][l] = 0.0;
-		}
-		
-		for (int j=0; j<i; j++) {
-			for(int k=0; k<3; k++) {
-				for(int l=0; l<3; l++) {
-					double r = hp->r(i,j,y);
-					double mtemp = - hp->xHat(i,j,k,y) * hp->xHat(i,j,l,y) / (r*r*r*r*r);
-					if (k==l)mtemp += 1/(r*r*r);
-					gsl_matrix_set (m, hp->fa(i,k), hp->yx(j,l), hp->M[j]*mtemp);
-					gsl_matrix_set (m, hp->fa(j,k), hp->yx(i,l), hp->M[i]*mtemp);
-					mdtemp[i][k][l] -= hp->M[j]*mtemp;
-					mdtemp[j][k][l] -= hp->M[i]*mtemp;
-				}			
+		for (int a=0; a<3; a++) {
+			gsl_matrix_set(m, hp->fv(i,a), hp->yv(i,a), 1.0);
+
+			for (int k=0; k<N; k++) {
+				for (int b=0; b<3; b++) {
+					double Gtemp = 0.0;
+					for (int j=0; j<N; j++) {
+						if (j != i) {							
+							double r = hp->r(i,j);
+							Gtemp -= hp->M[j] * (delta(i, k) - delta(j, k)) / (r*r*r) * \
+								(delta(a, b) - 3.0 * (hp->xHat(i,j,a,y))*(hp->xHat(i,j,b,y))/(r*r));
+						}
+					}
+					gsl_matrix_set(m, hp->fa(i,a), hp->yx(k,b), Gtemp);
+				}
 			}
 		}
 	}
-	
-	for (int i=0; i<N; i++) {
-		for(int k=0; k<3; k++) {
-			gsl_matrix_set (m, hp->fv(i,k), hp->yv(i,k), 1.0);
-			for(int l=0; l<3; l++)
-				gsl_matrix_set (m, hp->fa(i,k), hp->yx(i,l), mdtemp[i][k][l]);
-		}
-	}
-	/*
-	for (int i=0; i<6*N; i++) {
-		for (int j=0; j<6*N; j++) {
-			cout << gsl_matrix_get (m, i, j) << "\t";
-		}
-		cout << endl;
-	}
-	cout << endl;
-	*/
 	
 	for(int i=0; i<6*N; i++) dfdt[i] = 0.0;
 	
@@ -115,6 +96,21 @@ int jac (double t, const double y[], double *dfdy, double dfdt[],
 		}
 	}
 	
+	/* Debug Stuff
+	for (int i=0; i<6*N; i++) {
+		for (int j=0; j<6*N; j++) {
+			cout << gsl_matrix_get (m, i, j) << "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	*/
+	
+	
+	return(GSL_SUCCESS);
+}
 
-	return GSL_SUCCESS;
+double delta(int a, int b) {
+	if (a==b) return 1.0;
+	return 0.0;
 }
