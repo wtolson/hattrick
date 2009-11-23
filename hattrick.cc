@@ -82,8 +82,7 @@ int main (int argc, char** argv)
 		if (status != GSL_SUCCESS)
 			break;
 		
-		//h = min(h, hp.h1);
-		//h = hp.h0;
+		h = min(h, hp.h1);
 		
 		if(!hp.orbit() && hp.t >= tPrint) {
 			tPrint += hp.printSkip;

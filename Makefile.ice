@@ -6,8 +6,7 @@ SOURCE  = hattrick.cc gravity.cc hatparams.cc voodoomagic.cc
 OBJECTS = $(SOURCE:.cc=.o)
 
 all:
-	$(CXX) $(CXXFLAGS) -c $(SOURCE)
-	$(CXX) $(CXXFLAGS) -o hattrick $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o hattrick $(SOURCE)
 
 clean:
 	rm -f *.o
