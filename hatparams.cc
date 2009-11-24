@@ -93,12 +93,12 @@ hatparams::hatparams(int argc, char** argv)
 	diagnostics(&initialE, &initialL);
 	
 	pertR = x(n1,0);	
-	//cout << "E0:" << initialE << " L0:" << initialL << endl;
+	cout << "E0:" << initialE << " L0:" << initialL << endl;
 }
 
 bool hatparams::orbit() {
 	if (printSkip >= 0) return false;
-	
+	if (printSkip == -1) return true;
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
 		orbits++;
@@ -112,14 +112,13 @@ bool hatparams::orbit() {
 
 
 bool hatparams::dmbf() {
-		
+	if (printSkip != -1) return false;
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
 		double weWant = 5106.81015;
-		//double weWant = 4045;
 		orbits++;
 		if (abs(t-weWant) > abs(lastOrbit-weWant)) {
-			double E=0.0, L=0.0;
+			double E, L;
 			diagnostics(&E, &L);
 			double dE = (E - initialE) / initialE;
 			double dL = (E - initialE) / initialE;

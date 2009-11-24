@@ -85,15 +85,14 @@ int main (int argc, char** argv)
 		if (status != GSL_SUCCESS)
 			break;
 			
-		if (hp.dmbf()) break;
+		if (hp.dmbf())
+			break;
 		
 		// Print or check for orbit.
-		/*
 		if(!hp.orbit() && hp.t >= tPrint) {
 			tPrint += hp.printSkip;
 			hp.print();
 		}
-		*/
 		
 		
 		steps++;

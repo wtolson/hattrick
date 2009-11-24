@@ -30,7 +30,7 @@ system "date";
 
 $CPUNUM = 16;
 
-$workdir_base = "/scr2/dittmann";
+$workdir_base = "/scr1/dittmann";
 chdir $workdir_base;
 
 
