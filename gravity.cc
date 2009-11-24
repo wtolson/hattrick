@@ -17,10 +17,14 @@
 
 using namespace std;
 
+#define N hp->N
+#define M(i) hp->M[i]
+
 int func (double t, const double y[], double f[], void *params)
 {
+	//cout << "In func" << endl;
 	hatparams * hp = (hatparams *) params;
-	int N = hp->N;
+	//int N = hp->N;
 	
 	for(int i=0; i<6*N; i++) f[i] = 0.0;
 	
@@ -38,8 +42,8 @@ int func (double t, const double y[], double f[], void *params)
 				
 				// Set accelerations.
 				double ftemp = hp->xHat(i,j,k,y) / rcube;
-				f[hp->fa(i,k)] -= hp->M[j]*ftemp;
-				f[hp->fa(j,k)] += hp->M[i]*ftemp;
+				f[hp->fa(i,k)] -= M(j)*ftemp;
+				f[hp->fa(j,k)] += M(i)*ftemp;
 			}
 		}
 	}
@@ -49,8 +53,8 @@ int func (double t, const double y[], double f[], void *params)
 
 int jac (double t, const double *y, double *dfdy, double *dfdt, void *params)
 {
+	//cout << "In jac" << endl;
 	hatparams * hp = (hatparams *) params;
-	int N = hp->N;
 	
 	gsl_matrix_view dfdy_mat
 		= gsl_matrix_view_array (dfdy, 6*N, 6*N);
@@ -67,7 +71,7 @@ int jac (double t, const double *y, double *dfdy, double *dfdt, void *params)
 					for (int j=0; j<N; j++) {
 						if (j != i) {							
 							double r = hp->r(i,j);
-							Gtemp -= hp->M[j] * (delta(i, k) - delta(j, k)) / (r*r*r) * \
+							Gtemp -= M(j) * (delta(i, k) - delta(j, k)) / (r*r*r) * \
 								(delta(a, b) - 3.0 * (hp->xHat(i,j,a,y))*(hp->xHat(i,j,b,y))/(r*r));
 						}
 					}
@@ -85,13 +89,13 @@ int jac (double t, const double *y, double *dfdy, double *dfdt, void *params)
 				// Set accelerations.
 				double r = hp->r(i,j,y);
 				double ftemp = hp->xHat(i,j,k,y) / (r*r*r);
-				dfdt[hp->fv(i,k)] -= hp->M[j]*ftemp;
-				dfdt[hp->fv(j,k)] += hp->M[i]*ftemp;
+				dfdt[hp->fv(i,k)] -= M(j)*ftemp;
+				dfdt[hp->fv(j,k)] += M(i)*ftemp;
 				
 				// Set Jerks.
 				ftemp = ( hp->vHat(i,j,k,y) - 3 * ( hp->rDotv(i,j,y) / (r*r)) * hp->xHat(i,j,k,y) ) / (r*r*r);
-				dfdt[hp->fa(i,k)] -= hp->M[j]*ftemp;
-				dfdt[hp->fa(j,k)] += hp->M[i]*ftemp;
+				dfdt[hp->fa(i,k)] -= M(j)*ftemp;
+				dfdt[hp->fa(j,k)] += M(i)*ftemp;
 			}
 		}
 	}
@@ -114,3 +118,7 @@ double delta(int a, int b) {
 	if (a==b) return 1.0;
 	return 0.0;
 }
+
+
+#undef N
+#undef M

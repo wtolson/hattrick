@@ -12,16 +12,20 @@
 #ifndef HATPARAMS_H
 #define HATPARAMS_H
 
+using namespace std;
+
 class hatparams
 {
 	public:
 		int N, stepType;
 		double k, G;
 		double *M, *y;
-		double t, t0, t1, h0, h1, accr, printSkip;
+		double t, t0, t1, hmin, hmax, accr, printSkip;
 		bool SUCCESS;
 		
 		hatparams(int argc, char** argv);
+		
+		~hatparams();
 		
 		bool orbit();
 		
@@ -100,8 +104,8 @@ class hatparams
 		};
 									
 	private:		
-		void printHelp();
-		double xLast;
+		void printHelp(string errMssg);
+		double xLast, lastOrbit;
 		int orbits;
 };
 

@@ -23,7 +23,7 @@ hatparams::hatparams(int argc, char** argv)
 	
 	if (argc == 1) {
 		SUCCESS = false;
-		printHelp();
+		printHelp("");
 		return;
 	}
 	
@@ -32,9 +32,8 @@ hatparams::hatparams(int argc, char** argv)
 	ifstream ifs ( argv[1] , ifstream::in );
 	
 	if (!ifs.is_open()) {
-		SUCCESS = false;
 		cerr << "The file " << argv[1] << " does not exist." << endl;
-		printHelp();
+		printHelp("");
 		return;
 	}
 	
@@ -44,16 +43,14 @@ hatparams::hatparams(int argc, char** argv)
 	ifs >> t0;
 	t = t0;
 	ifs >> t1;
-	ifs >> h0;
-	ifs >> h1;
+	ifs >> hmin;
+	ifs >> hmax;
 	ifs >> accr;
 	ifs >> printSkip;
 	ifs >> stepType;
 	
 	if (stepType!=0 && stepType!=1 && stepType!=2) {
-		SUCCESS = false;
-		cerr << "Invalid integration step type." << endl;
-		printHelp();
+		printHelp("Invalid integration step type.");
 		return;
 	}
 	
@@ -61,12 +58,10 @@ hatparams::hatparams(int argc, char** argv)
 		n2 = atoi(argv[2]);
 	
 	if (argc >= 3 && argc != (3+2*n2)) {
-		SUCCESS = false;
 		if (argc > (3+2*n2))
-			cerr << "Too many arguments." << endl;
+			printHelp("Too many arguments.");
 		if (argc < (3+2*n2))
-			cerr << "Too few arguments." << endl;
-		printHelp();
+			printHelp("Too few arguments.");
 		return;
 	}
 	
@@ -92,15 +87,23 @@ hatparams::hatparams(int argc, char** argv)
 		y[yv(i,1)] = sqrt(M[0]/y[9*i]);       // vy
 	}
 	
-	xLast = xHat(1,0,1);
+	double rtemp = r(0,1);
+	double predorb = 6.283185307179586 * sqrt( rtemp*rtemp*rtemp / (M[0]+M[1]) );
+	
+	cout << "Predicted orbit: " << predorb << " days" << endl;
+	
+	xLast = xHat(1,0,1);	
+	lastOrbit = t0;
 }
 
 bool hatparams::orbit() {
-	if (printSkip > 0) return false;
+	if (printSkip >= 0) return false;
 	
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
 		orbits++;
+		cout << "Orbit " << orbits << ": " << (t-lastOrbit) << " days" << endl;
+		lastOrbit = t;
 		print();
 	}
 	xLast = xThis;
@@ -118,7 +121,9 @@ void hatparams::print() {
 }
 
 	
-void hatparams::printHelp() {
+void hatparams::printHelp(string errMssg) {
+	SUCCESS = false;
+	if (!errMssg.empty()) cerr << errMssg << endl;
 	cerr << "Input format:" << endl;
 	cerr << "    ./hattrick baseSys" << endl;	
 	cerr << "    ./hattrick baseSys n m1 r1 ... mn rn"  << endl << endl;
@@ -130,7 +135,7 @@ void hatparams::printHelp() {
 	cerr << "    rn (optional): Radius of the nth perturbing body." << endl << endl;
 	
 	cerr << "Base system file format:" << endl;
-	cerr << "    n t0 t1 h0 h1 accr printSkip stepType" << endl;
+	cerr << "    n t0 t1 h0 hmin hmax accr printSkip stepType" << endl;
 	cerr << "    m1 x1 y1 z1 vx1 vy1 vz1" << endl;
 	cerr << "    m2 x2 y2 z2 vx2 vy2 vz2" << endl;
 	cerr << "        ..." << endl;
@@ -140,12 +145,17 @@ void hatparams::printHelp() {
 	cerr << "    n: Number of bodies in the base system." << endl;
 	cerr << "    t0: Initial system time." << endl;
 	cerr << "    t1: Final system time." << endl;
-	cerr << "    h0: Initial time step." << endl;
-	cerr << "    h1: Max time step." << endl;
+	cerr << "    hmin: Minimum time step." << endl;
+	cerr << "    hmax: Max time step.  Also the initial step size." << endl;
 	cerr << "    accr: Accuracy paramater." << endl;
 	cerr << "    skipPrint: The time skiped between prints." << endl;
 	cerr << "        -1 for print orbits only." << endl;
 	cerr << "    stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp." << endl;
 }
 
-
+hatparams::~hatparams() {
+	delete[] M;
+	M = 0;
+	delete[] y;
+	y = 0;
+}
