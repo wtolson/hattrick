@@ -69,15 +69,14 @@ int main (int argc, char** argv)
 	gsl_odeiv_system sys = {func, jac, 6*hp.N, &hp};
 	
 	// Set some initials.
-	double h=hp.hmax;//, tPrint=hp.printSkip;
+	double h=hp.hmax, tPrint=hp.printSkip;
 	int steps = 0;
 	sacrificeChicken();
 	
 	// Initial print out.
 	//hp.print();
 	
-	//while (hp.t < hp.t1)
-	while (!hp.dmbf())
+	while (hp.t < hp.t1)
 	{
 		// Take a step.  Get new h.
 		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &hp.t, hp.t1,
@@ -85,6 +84,8 @@ int main (int argc, char** argv)
 		
 		if (status != GSL_SUCCESS)
 			break;
+			
+		if (hp.dmbf()) break;
 		
 		// Print or check for orbit.
 		/*
@@ -93,6 +94,7 @@ int main (int argc, char** argv)
 			hp.print();
 		}
 		*/
+		
 		
 		steps++;
 		

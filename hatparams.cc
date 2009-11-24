@@ -84,7 +84,7 @@ hatparams::hatparams(int argc, char** argv)
 			y[yv(i,k)] = 0.0;
 		}
 		y[yx(i,0)] = atof(argv[4+2*(i-n1)]);  // x
-		y[yv(i,1)] = sqrt(M[0]/y[9*i]);       // vy
+		y[yv(i,1)] = sqrt(M[0]/r(0,i));       // vy
 	}
 		
 	xLast = xHat(1,0,1);	
@@ -92,8 +92,7 @@ hatparams::hatparams(int argc, char** argv)
 	
 	diagnostics(&initialE, &initialL);
 	
-	pertR = x(3,0);
-	
+	pertR = x(n1,0);	
 	//cout << "E0:" << initialE << " L0:" << initialL << endl;
 }
 
@@ -102,28 +101,22 @@ bool hatparams::orbit() {
 	
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
-		double weWant = 5106.81015;
 		orbits++;
-		//cout << abs(t-weWant) << " " << abs(lastOrbit-weWant) << endl;
-		if (abs(t-weWant) > abs(lastOrbit-weWant)) {
-			double E=0.0, L=0.0;
-			diagnostics(&E, &L);
-			double dE = (E - initialE) / initialE;
-			double dL = (E - initialE) / initialE;
-			cout << (M[3]/G) << " " << pertR << " " << lastOrbit << " " << dE << " " << dL << endl;
-		}
+		cout << "Orbit " << orbits << ": " << (t-lastOrbit) << " days" << endl;
 		lastOrbit = t;
-		//print();
+		print();
 	}
 	xLast = xThis;
 	return true;
 }
+
 
 bool hatparams::dmbf() {
 		
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
 		double weWant = 5106.81015;
+		//double weWant = 4045;
 		orbits++;
 		if (abs(t-weWant) > abs(lastOrbit-weWant)) {
 			double E=0.0, L=0.0;
@@ -131,7 +124,7 @@ bool hatparams::dmbf() {
 			double dE = (E - initialE) / initialE;
 			double dL = (E - initialE) / initialE;
 			cout.precision(10);
-			cout << (M[3]/G) << " " << pertR << " " << lastOrbit << " " << dE << " " << dL << endl;
+			cout << (M[2]/G) << " " << pertR << " " << lastOrbit << " " << dE << " " << dL << endl;
 			return true;
 		}
 		lastOrbit = t;
