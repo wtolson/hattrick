@@ -86,14 +86,15 @@ hatparams::hatparams(int argc, char** argv)
 		y[yx(i,0)] = atof(argv[4+2*(i-n1)]);  // x
 		y[yv(i,1)] = sqrt(M[0]/y[9*i]);       // vy
 	}
-	
-	double rtemp = r(0,1);
-	double predorb = 6.283185307179586 * sqrt( rtemp*rtemp*rtemp / (M[0]+M[1]) );
-	
-	cout << "Predicted orbit: " << predorb << " days" << endl;
-	
+		
 	xLast = xHat(1,0,1);	
 	lastOrbit = t0;
+	
+	diagnostics(&initialE, &initialL);
+	
+	pertR = x(3,0);
+	
+	//cout << "E0:" << initialE << " L0:" << initialL << endl;
 }
 
 bool hatparams::orbit() {
@@ -101,17 +102,66 @@ bool hatparams::orbit() {
 	
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
+		double weWant = 5106.81015;
 		orbits++;
-		cout << "Orbit " << orbits << ": " << (t-lastOrbit) << " days" << endl;
+		//cout << abs(t-weWant) << " " << abs(lastOrbit-weWant) << endl;
+		if (abs(t-weWant) > abs(lastOrbit-weWant)) {
+			double E=0.0, L=0.0;
+			diagnostics(&E, &L);
+			double dE = (E - initialE) / initialE;
+			double dL = (E - initialE) / initialE;
+			cout << (M[3]/G) << " " << pertR << " " << lastOrbit << " " << dE << " " << dL << endl;
+		}
 		lastOrbit = t;
-		print();
+		//print();
 	}
 	xLast = xThis;
 	return true;
 }
 
+bool hatparams::dmbf() {
+		
+	double xThis = xHat(1,0,1);
+	if (xThis>=0.0 && xLast<0.0)  {
+		double weWant = 5106.81015;
+		orbits++;
+		if (abs(t-weWant) > abs(lastOrbit-weWant)) {
+			double E=0.0, L=0.0;
+			diagnostics(&E, &L);
+			double dE = (E - initialE) / initialE;
+			double dL = (E - initialE) / initialE;
+			cout.precision(10);
+			cout << (M[3]/G) << " " << pertR << " " << lastOrbit << " " << dE << " " << dL << endl;
+			return true;
+		}
+		lastOrbit = t;
+	}
+	xLast = xThis;
+	return false;
+}
+
+
+void hatparams::diagnostics(double * E, double * L) {
+	*L = 0.0;
+	for (int i=0; i<N; i++) {
+		*L += sqrt( (x(i,1)*v(i,2) + x(i,2)*v(i,1))*(x(i,1)*v(i,2) + x(i,2)*v(i,1)) + \
+				   (x(i,2)*v(i,0) + x(i,0)*v(i,2))*(x(i,2)*v(i,0) + x(i,0)*v(i,2)) + \
+				   (x(i,0)*v(i,1) + x(i,1)*v(i,0))*(x(i,0)*v(i,1) + x(i,1)*v(i,0)) );
+	}
+	
+	*E = 0.0;
+	for (int i=0; i<N; i++) {
+		*E += 0.5 * (M[i] / G) * (v(i,0)*v(i,0) + v(i,1)*v(i,1) + v(i,2)*v(i,2));
+		for (int cheetos=0; cheetos<N; cheetos++) {
+			if ( i != cheetos ) *E -= M[cheetos]*M[i]/(G*r(i,cheetos));
+		}
+	}
+}
+
 
 void hatparams::print() {
+	//cout.setf(0,ios::floatfield);
+	cout.precision(10);
 	cout << t << " ";
 	for (int i = 0; i < N; i++) {
 		for (int k = 0; k < 3; k++) cout << " " << x(i,k);
@@ -154,8 +204,8 @@ void hatparams::printHelp(string errMssg) {
 }
 
 hatparams::~hatparams() {
-	delete[] M;
+	if (M == NULL) delete[] M;
 	M = 0;
-	delete[] y;
+	if (y == NULL) delete[] y;
 	y = 0;
 }

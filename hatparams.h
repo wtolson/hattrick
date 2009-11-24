@@ -29,6 +29,8 @@ class hatparams
 		
 		bool orbit();
 		
+		bool dmbf();
+		
 		void print();
 		
 		double x (int i, int k) {
@@ -102,10 +104,13 @@ class hatparams
 		int fa (int i, int k) {
 			return (6*i + k + 3);
 		};
+		
+		void diagnostics(double * E, double * L);
 									
 	private:		
 		void printHelp(string errMssg);
 		double xLast, lastOrbit;
+		double initialE, initialL, pertR;
 		int orbits;
 };
 
