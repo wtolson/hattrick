@@ -93,7 +93,7 @@ hatparams::hatparams(int argc, char** argv)
 	diagnostics(&initialE, &initialL);
 	
 	pertR = x(n1,0);	
-	cout << "E0:" << initialE << " L0:" << initialL << endl;
+	//cout << "E0:" << initialE << " L0:" << initialL << endl;
 }
 
 bool hatparams::orbit() {
