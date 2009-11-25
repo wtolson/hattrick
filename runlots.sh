@@ -28,16 +28,16 @@
 
 system "date";
 
-$CPUNUM = 16;
+$CPUNUM = 2;
 
 $workdir_base = "/scr1/dittmann";
-chdir $workdir_base;
+#chdir $workdir_base;
 
 
 $RUN = 0;
-for ($M = 3e-8; $M <= 3e-5; $M+=9e-8)
+for ($M = 1e-6; $M <= 1e-2; $M+=1e-6) #99999
 {
-	for ($R = 0.0831; $R <= 1; $R+=0.01)
+	for ($R = .005; $R <= 0.05; $R+=0.001) #45
 	{
 		$RUN++;
 		$pid[$RUN-1] = -1;
@@ -46,10 +46,7 @@ for ($M = 3e-8; $M <= 3e-5; $M+=9e-8)
 			print "ERROR: cannot fork: 1\n";
 		}
 		if ($pid[$RUN-1]==0) {
-			system "./hattrick hat.txt 1 $M $R >> 23novRun.txt";
-			#print "Hi! I'm run $RUN.\n";
-			#sleep 1;
-			#print "Run $RUN done.\n";
+			system "./hattrick hat.txt 1 $M $R >> Run3.txt";
 			exit;
 		}
 
