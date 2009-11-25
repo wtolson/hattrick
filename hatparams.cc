@@ -97,8 +97,8 @@ hatparams::hatparams(int argc, char** argv)
 }
 
 bool hatparams::orbit() {
-	if (printSkip >= 0) return false;
-	if (printSkip == -1) return true;
+	if (printSkip > 0) return false;
+	if (printSkip < 0) return true;
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
 		orbits++;
@@ -112,12 +112,11 @@ bool hatparams::orbit() {
 
 
 bool hatparams::dmbf() {
-	if (printSkip != -1) return false;
+	if (printSkip < 0) return false;
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
-		double weWant = 5106.81015;
 		orbits++;
-		if (abs(t-weWant) > abs(lastOrbit-weWant)) {
+		if (abs(t+printSkip) > abs(lastOrbit+printSkip)) {
 			double E, L;
 			diagnostics(&E, &L);
 			double dE = (E - initialE) / initialE;
@@ -190,8 +189,10 @@ void hatparams::printHelp(string errMssg) {
 	cerr << "    hmin: Minimum time step." << endl;
 	cerr << "    hmax: Max time step.  Also the initial step size." << endl;
 	cerr << "    accr: Accuracy paramater." << endl;
-	cerr << "    skipPrint: The time skiped between prints." << endl;
-	cerr << "        -1 for print orbits only." << endl;
+	cerr << "    skipPrint:" << endl;
+	cerr << "        >0 to specify the time skipped between prints." << endl;
+	cerr << "        =0 to print on orbits only." << endl;
+	cerr << "        <0 to print just the closest orbit time." << endl;
 	cerr << "    stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp." << endl;
 }
 

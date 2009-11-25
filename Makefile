@@ -2,7 +2,7 @@ CXX      = g++
 CXXFLAGS = -Wall -O3 -lgsl -lm -lgslcblas
 SOURCE   = hattrick.cc gravity.cc hatparams.cc voodoomagic.cc
 OBJECTS  = $(SOURCE:.cc=.o)
-VERSION  = 0.9
+VERSION  = 1.0
 
 all: hattrick.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o hattrick $(OBJECTS)

@@ -1,6 +1,6 @@
 Hat Trick Nbody Simulator
 By William Olson and Jason Dittmann
-Version 0.8
+Version 1.0
 GNU General Public License v3
 http://code.google.com/p/hattrick-nbody/
 
@@ -32,20 +32,24 @@ TO RUN:
 			...
 		mn xn yn zn vxn vyn vzn
 
+
 	Where:
 		n: Number of bodies in the base system.
 		t0: Initial system time.
 		t1: Final system time.
-		h0: Initial time step.
-		h1: Max time step.
+		hmin: Minimum time step.
+		hmax: Max time step.  Also the initial step size.
 		accr: Accuracy paramater.
-		printSkip: The time skiped between prints.
-			-1 for print orbits only.
-		stepType: 0 for rk45, 1 for bsimp.
+		skipPrint:
+			>0 to specify the time skipped between prints.
+			=0 to print on orbits only.
+			<0 to print just the closest orbit time.
+		stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp.
+
 
 Examples:
 	./hattrick
-		Will print the help shown above.
+		Prints the help shown above.
 		
 	./hattrick sunearth.dat
 		This will run a integration of the Sun and Earth.	
