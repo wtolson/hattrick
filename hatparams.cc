@@ -112,7 +112,7 @@ bool hatparams::orbit() {
 
 
 bool hatparams::dmbf() {
-	if (printSkip < 0) return false;
+	if (printSkip >= 0) return false;
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
 		orbits++;
