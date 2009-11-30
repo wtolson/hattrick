@@ -35,9 +35,11 @@ $workdir_base = "/scr1/dittmann";
 
 
 $RUN = 0;
-for ($M = 1e-6; $M <= 1e-2; $M+=1e-6) #99999
+#for ($M = 1e-7; $M <= 5e-6; $M+=1e-7) #49
+#{
+for ($R = 1.0; $R >= 0.055; $R+= -0.0001) #150
 {
-	for ($R = .005; $R <= 0.05; $R+=0.001) #45
+	for ($M  = 1e-5; $M <= 5e-3; $M+=1e-5)
 	{
 		$RUN++;
 		$pid[$RUN-1] = -1;
@@ -46,7 +48,7 @@ for ($M = 1e-6; $M <= 1e-2; $M+=1e-6) #99999
 			print "ERROR: cannot fork: 1\n";
 		}
 		if ($pid[$RUN-1]==0) {
-			system "./hattrick hat.txt 1 $M $R >> Run3.txt";
+			system "./hattrick hat.txt 1 $M $R >> Run5.txt";
 			exit;
 		}
 

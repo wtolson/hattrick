@@ -3,7 +3,7 @@
  *
  * Copyright 2009 William Olson <wtolson@gmail.com>
  * GNU General Public License v3
- * 
+ *
  */
 
 #include <iostream>
@@ -20,15 +20,15 @@ hatparams::hatparams(int argc, char** argv)
 	G = k*k;
 	orbits = 0;
 	SUCCESS = true;
-	
+
 	if (argc == 1) {
 		SUCCESS = false;
 		printHelp("");
 		return;
 	}
-	
+
 	SUCCESS = true;
-	
+
 	ifstream ifs ( argv[1] , ifstream::in );
 	
 	if (!ifs.is_open()) {

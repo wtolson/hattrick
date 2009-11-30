@@ -42,18 +42,18 @@ int main (int argc, char** argv)
 	// Read in parameters.
 	hatparams hp = hatparams (argc, argv);
 	if (!hp.SUCCESS) return 1;
-	
+
 	// Set integration step type.
 	const gsl_odeiv_step_type * T;
 	switch (hp.stepType) {
 		case 1:
 			T = gsl_odeiv_step_rk8pd;
 			break;
-			
+
 		case 2:
 			T = gsl_odeiv_step_bsimp;
 			break;
-			
+
 		default:
 			T = gsl_odeiv_step_rkf45;
 	}
@@ -65,38 +65,38 @@ int main (int argc, char** argv)
 		= gsl_odeiv_control_y_new (hp.accr, 0.0);
 	gsl_odeiv_evolve * e
 		= gsl_odeiv_evolve_alloc (6*hp.N);
-		
+
 	gsl_odeiv_system sys = {func, jac, 6*hp.N, &hp};
-	
+
 	// Set some initials.
 	double h=hp.hmax, tPrint=hp.printSkip;
 	int steps = 0;
 	sacrificeChicken();
-	
+
 	// Initial print out.
 	//hp.print();
-	
+
 	while (hp.t < hp.t1)
 	{
 		// Take a step.  Get new h.
 		int status = gsl_odeiv_evolve_apply (e, c, s, &sys, &hp.t, hp.t1,
 											 &h, hp.y);	
-		
+
 		if (status != GSL_SUCCESS)
 			break;
-			
+
 		if (hp.dmbf())
 			break;
-		
+
 		// Print or check for orbit.
 		if(!hp.orbit() && hp.t >= tPrint) {
 			tPrint += hp.printSkip;
 			hp.print();
 		}
-		
-		
+
+
 		steps++;
-		
+
 		// Step size control.  Smaller steps near orbits.
 		if (hp.xHat(1,0,1)<0.0 && hp.vHat(1,0,1)>0.0) h = min(h,-hp.xHat(1,0,1)/(2*hp.vHat(1,0,1)));
 		h = min(h, hp.hmax);
@@ -104,7 +104,7 @@ int main (int argc, char** argv)
 	}
 
 	//cout << "Steps:" << steps << endl;
-	
+
 	// Free GSL memory.
 	gsl_odeiv_evolve_free (e);
 	gsl_odeiv_control_free (c);
