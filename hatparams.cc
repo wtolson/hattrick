@@ -14,7 +14,7 @@
 
 using namespace std;
 
-hatparams::hatparams(int argc, char** argv)
+Hatparams::Hatparams(int argc, char** argv)
 {
 	k = 0.01720209895;
 	G = k*k;
@@ -96,22 +96,24 @@ hatparams::hatparams(int argc, char** argv)
 	//cout << "E0:" << initialE << " L0:" << initialL << endl;
 }
 
-bool hatparams::orbit() {
+bool Hatparams::orbit() {
 	if (printSkip > 0) return false;
 	if (printSkip < 0) return true;
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
 		orbits++;
-		cout << "Orbit " << orbits << ": " << (t-lastOrbit) << " days" << endl;
+		//cout << "Orbit " << orbits << ": " << (t-lastOrbit) << " days" << endl;
+		cout << (t-lastOrbit) << endl;
+		cout.precision(10);
 		lastOrbit = t;
-		print();
+		//print();
 	}
 	xLast = xThis;
 	return true;
 }
 
 
-bool hatparams::dmbf() {
+bool Hatparams::dmbf() {
 	if (printSkip >= 0) return false;
 	double xThis = xHat(1,0,1);
 	if (xThis>=0.0 && xLast<0.0)  {
@@ -132,7 +134,7 @@ bool hatparams::dmbf() {
 }
 
 
-void hatparams::diagnostics(double * E, double * L) {
+void Hatparams::diagnostics(double * E, double * L) {
 	*L = 0.0;
 	for (int i=0; i<N; i++) {
 		*L += sqrt( (x(i,1)*v(i,2) + x(i,2)*v(i,1))*(x(i,1)*v(i,2) + x(i,2)*v(i,1)) + \
@@ -150,7 +152,7 @@ void hatparams::diagnostics(double * E, double * L) {
 }
 
 
-void hatparams::print() {
+void Hatparams::print() {
 	//cout.setf(0,ios::floatfield);
 	cout.precision(10);
 	cout << t << " ";
@@ -162,7 +164,7 @@ void hatparams::print() {
 }
 
 	
-void hatparams::printHelp(string errMssg) {
+void Hatparams::printHelp(string errMssg) {
 	SUCCESS = false;
 	if (!errMssg.empty()) cerr << errMssg << endl;
 	cerr << "Input format:" << endl;
@@ -196,7 +198,7 @@ void hatparams::printHelp(string errMssg) {
 	cerr << "    stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp." << endl;
 }
 
-hatparams::~hatparams() {
+Hatparams::~Hatparams() {
 	if (M == NULL) delete[] M;
 	M = 0;
 	if (y == NULL) delete[] y;

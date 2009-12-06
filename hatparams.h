@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class hatparams
+class Hatparams
 {
 	public:
 		int N, stepType;
@@ -23,9 +23,9 @@ class hatparams
 		double t, t0, t1, hmin, hmax, accr, printSkip;
 		bool SUCCESS;
 		
-		hatparams(int argc, char** argv);
+		Hatparams(int argc, char** argv);
 		
-		~hatparams();
+		~Hatparams();
 		
 		bool orbit();
 		

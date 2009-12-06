@@ -40,7 +40,7 @@ using namespace std;
 int main (int argc, char** argv)
 {
 	// Read in parameters.
-	hatparams hp = hatparams (argc, argv);
+	Hatparams hp = Hatparams (argc, argv);
 	if (!hp.SUCCESS) return 1;
 
 	// Set integration step type.

@@ -23,7 +23,7 @@ using namespace std;
 int func (double t, const double y[], double f[], void *params)
 {
 	//cout << "In func" << endl;
-	hatparams * hp = (hatparams *) params;
+	Hatparams * hp = (Hatparams *) params;
 	//int N = hp->N;
 	
 	for(int i=0; i<6*N; i++) f[i] = 0.0;
@@ -54,7 +54,7 @@ int func (double t, const double y[], double f[], void *params)
 int jac (double t, const double *y, double *dfdy, double *dfdt, void *params)
 {
 	//cout << "In jac" << endl;
-	hatparams * hp = (hatparams *) params;
+	Hatparams * hp = (Hatparams *) params;
 	
 	gsl_matrix_view dfdy_mat
 		= gsl_matrix_view_array (dfdy, 6*N, 6*N);
