@@ -16,8 +16,6 @@ using namespace std;
 
 Hatparams::Hatparams(int argc, char** argv)
 {
-    k = 0.01720209895;
-    G = k*k;
     orbits = 0;
     SUCCESS = true;
 
@@ -96,6 +94,8 @@ Hatparams::Hatparams(int argc, char** argv)
     //cout << "E0:" << initialE << " L0:" << initialL << endl;
 }
 
+
+
 bool Hatparams::orbit() {
     if (printSkip > 0) return false;
     if (printSkip < 0) return true;
@@ -111,6 +111,7 @@ bool Hatparams::orbit() {
     xLast = xThis;
     return true;
 }
+
 
 
 bool Hatparams::dmbf() {
@@ -134,6 +135,7 @@ bool Hatparams::dmbf() {
 }
 
 
+
 void Hatparams::diagnostics(double * E, double * L) {
     *L = 0.0;
     for (int i=0; i<N; i++) {
@@ -152,6 +154,7 @@ void Hatparams::diagnostics(double * E, double * L) {
 }
 
 
+
 void Hatparams::print() {
     //cout.setf(0,ios::floatfield);
     cout.precision(10);
@@ -162,6 +165,8 @@ void Hatparams::print() {
     }
     cout << endl;
 }
+
+
 
 void Hatparams::printHelp(string errMssg) {
     SUCCESS = false;
@@ -196,6 +201,8 @@ void Hatparams::printHelp(string errMssg) {
     cerr << "        <0 to print just the closest orbit time." << endl;
     cerr << "    stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp." << endl;
 }
+
+
 
 Hatparams::~Hatparams() {
     if (M == NULL) delete[] M;

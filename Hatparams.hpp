@@ -18,7 +18,8 @@ class Hatparams
 {
     public:
         int N, stepType;
-        double k, G;
+        static const double k = 0.01720209895;
+        static const double G = 0.0002959122082855911025;
         double *M, *y;
         double t, t0, t1, hmin, hmax, accr, printSkip;
         bool SUCCESS;
