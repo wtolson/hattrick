@@ -1,12 +1,11 @@
-/***********************************************************************
- * gravity.cpp
- *
- * Copyright 2009 William Olson <wtolson@gmail.com>
- * GNU General Public License v3
- *
- * The System of equations describing the forces between the particles.
- *
- */
+// ***********************************************************************
+// gravity.cpp
+//
+// Copyright 2010 William Olson <wtolson@gmail.com>
+// GNU General Public License v3
+//
+// The System of equations describing the forces between the particles.
+
 
 #include <iostream>
 #include <cmath>
@@ -112,6 +111,20 @@ int jac (double t, const double *y, double *dfdy, double *dfdt, void *params)
 
 
     return(GSL_SUCCESS);
+}
+
+int jacnot (double t, const double *y, double *dfdy, double *dfdt, void *params)
+{
+    Hatparams * hp = (Hatparams *) params;
+
+    gsl_matrix_view dfdy_mat
+        = gsl_matrix_view_array (dfdy, 6*N, 6*N);
+    gsl_matrix * m = &dfdy_mat.matrix;
+    gsl_matrix_set_zero (m);
+
+    for(int i=0; i<6*N; i++) dfdt[i] = 0.0;
+
+	return(GSL_SUCCESS);
 }
 
 double delta(int a, int b) {

@@ -1,12 +1,12 @@
-/***********************************************************************
- * hatparams.h
- *
- * Copyright 2009 William Olson <wtolson@gmail.com>
- * GNU General Public License v3
- *
- * Header file for hatparams.cpp
- *
- */
+// ***********************************************************************
+// hatparams.h
+//
+// Copyright 2010 William Olson <wtolson@gmail.com>
+// GNU General Public License v3
+//
+// Header file for hatparams.cpp
+
+
 
 
 #ifndef HATPARAMS_H

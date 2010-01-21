@@ -1,10 +1,9 @@
-/***********************************************************************
- * hatparams.cpp
- *
- * Copyright 2009 William Olson <wtolson@gmail.com>
- * GNU General Public License v3
- *
- */
+// ***********************************************************************
+// hatparams.cpp
+//
+// Copyright 2010 William Olson <wtolson@gmail.com>
+// GNU General Public License v3
+
 
 #include <iostream>
 #include <fstream>
