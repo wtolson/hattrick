@@ -2,7 +2,8 @@ CXX      = g++
 CXXFLAGS = -Wall -O3 -lgsl -lm -lgslcblas
 SOURCE   = hattrick.cc gravity.cc Hatparams.cc voodoomagic.cc
 OBJECTS  = $(SOURCE:.cc=.o)
-VERSION  = 1.0
+VERSION  = 1.1
+REQUIRES = libgsl0ldbl
 
 all: hattrick.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o hattrick $(OBJECTS)
@@ -15,10 +16,11 @@ debug:
 	$(CXX) -Wall -O0 -g -lgsl -lm -lgslcblas -o hattrick $(OBJECTS)
 
 deb:
-	checkinstall -y -D --pkgname=hattrick --pkgversion=1.1 --pkgrelease=1 --pkggroup=hattrick --maintainer="William Olson \<wtolson@gmail.com\>" --requires="gsl-bin" --provides="hattrick"
+	checkinstall -D --pkgname=hattrick --pkgversion=$(VERSION) --pkgrelease=1 --pkggroup=hattrick --maintainer="William Olson \<wtolson@gmail.com\>" --requires="$(REQUIRES)" --provides=hattrick
 
 install:
-	mv ./hattrick /usr/bin
+	cp ./hattrick /usr/bin
+	cp ../doc/hattrick.1.gz /usr/share/man/man1
 
 clean:
 	rm -f *.o

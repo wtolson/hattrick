@@ -1,0 +1,1 @@
+Simple but accurate N-Body integrator meant for high control over small systems, specifically meant for introducing and analyzing the effects of perturbing bodies. Uses GSL ODE solver to solve the equations of motions. Useful high-accuracy astrodynamic constants we use.

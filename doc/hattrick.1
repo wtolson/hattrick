@@ -1,0 +1,80 @@
+.TH HATTRICK 1 "January 23, 2010" "GNU" "Hattrick n-Body Simulator"
+.SH NAME
+hattrick
+.SH DESCRIPTION
+Simple but accurate N-Body integrator meant for high control over small systems, specifically meant for introducing and analyzing the effects of perturbing bodies. Uses GSL ODE solver to solve the equations of motions. Useful high-accuracy astrodynamic constants we use.
+
+Input format:
+.in 10
+hattrick baseSys
+.in 10
+hattrick baseSys n m1 r1 ... mn rn
+
+Where:
+.in 13
+baseSys: Name of the file specifying the base system.
+.in 13
+n (optional): Number of perturbing bodies.
+.in 13
+mn (optional): Mass of the nth perturbing body.
+.in 13
+rn (optional): Radius of the nth perturbing body.
+
+.in 7
+Base system file format:
+.in 10
+n t0 t1 h0 h1 accr printSkip stepType
+.in 10
+m1 x1 y1 z1 vx1 vy1 vz1
+.in 10
+m2 x2 y2 z2 vx2 vy2 vz2
+.in 10
+         ...
+.in 10
+mn xn yn zn vxn vyn vzn
+
+
+Where:
+.in 13
+n: Number of bodies in the base system.
+.in 13
+t0: Initial system time.
+.in 13
+t1: Final system time.
+.in 13
+hmin: Minimum time step.
+.in 13
+hmax: Max time step.  Also the initial step size.
+.in 13
+accr: Accuracy paramater.
+.in 13
+skipPrint:
+.in 16
+>0 to specify the time skipped between prints.
+.in 16
+=0 to print on orbits only.
+.in 16
+<0 to print just the closest orbit time.
+.in 13
+stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp.
+
+
+.SH EXAMPLE
+.in 7
+hattrick
+.in 10
+Prints the help shown above.
+
+.in 7
+hattrick sunearth.dat
+.in 10
+This will run a integration of the Sun and Earth.	
+
+.in 7
+hattrick sunearth.dat 1 9.5492E-4 5.204267 > out.txt
+.in 10
+This will run a integration of the Sun, Earth and a circularized Jupiter and direct the ouput into 'out.txt'.
+
+
+.SH AUTHOR
+   			  William Olson <wtolson@gmail.com>
