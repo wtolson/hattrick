@@ -14,5 +14,11 @@ debug:
 	$(CXX) -Wall -O0 -g -lgsl -lm -lgslcblas -c $(SOURCE)
 	$(CXX) -Wall -O0 -g -lgsl -lm -lgslcblas -o hattrick $(OBJECTS)
 
+deb:
+	checkinstall -y -D --pkgname=hattrick --pkgversion=1.1 --pkgrelease=1 --pkggroup=hattrick --maintainer="William Olson \<wtolson@gmail.com\>" --requires="gsl-bin" --provides="hattrick"
+
+install:
+	mv ./hattrick /usr/bin
+
 clean:
 	rm -f *.o
