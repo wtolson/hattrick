@@ -69,7 +69,7 @@ int main (int argc, char** argv)
     gsl_odeiv_system sys = {func, jacnot, 6*hp.N, &hp};
 
     // Set some initials.
-    double h=hp.hmax, tPrint=hp.printSkip;
+    double h=hp.hmax, tPrint=hp.t;
     int steps = 0;
     sacrificeChicken();
 
