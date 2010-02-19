@@ -18,10 +18,10 @@ public:
 	Planets(const Planets& p);
 	virtual ~Planets();
 
-	bool AddPlanet(double mass, double x[3], double v[3]);
+	bool AddPlanet(double mass, double x[3], double v[3], bool isDynamic = false);
 	bool AddPlanet(double mass, double a, double e = 0.0, double inc = 0.0,
-			double node = 0.0, double w = 0.0, double M = 0.0);
-	bool AddPlanet(double mass, KeplerianElements ke);
+			double node = 0.0, double w = 0.0, double M = 0.0, bool isDynamic = true);
+	bool AddPlanet(double mass, KeplerianElements ke, bool isDynamic = true);
 
 	double * PlanetsPointer() {
 		return y;
@@ -46,7 +46,10 @@ public:
 	}
 	;
 
-	KeplerianElements *getKeplerian(int i);
+	KeplerianElements *GetKeplerian(int i);
+	double CM(int k);
+	double VCM(int k);
+	double TotalMass();
 
 	//Diagnostics
 	double * P(int i);
@@ -59,6 +62,9 @@ private:
 	int numPlanets;
 	int capacity;
 	double *mass, *y;
+	bool *isDynamic;
+	KeplerianElements **dynamicConstants;
+
 
 	void grow();
 };

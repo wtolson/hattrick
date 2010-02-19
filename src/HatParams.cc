@@ -66,14 +66,14 @@ HatParams::HatParams(int argc, char** argv) {
 	p = new Planets(n1 + n2);
 	for (int i = 0; i < n1; i++) {
 		int cs;
-		ifs >> cs;
-		bool status;
 		double m;
+		ifs >> cs;
+		ifs >> m;
+		bool status;
 		switch (cs) {
 		case 0:
 			double x[3], v[3];
 
-			ifs >> m;
 			for (int k = 0; k < 3; k++)
 				ifs >> x[k];
 			for (int k = 0; k < 3; k++)
@@ -257,8 +257,9 @@ void HatParams::PrintKeplerianElements(EventParams *ep) {
 	Planets &p = *ep->p;
 
 	cout << ep->time << " ";
+	cout.setf(ios_base::scientific);
 	for (int i = 1; i < p.N(); i++) {
-		KeplerianElements *ke = p.getKeplerian(i);
+		KeplerianElements *ke = p.GetKeplerian(i);
 		cout << ke->a << " ";
 		cout << ke->e << " ";
 		cout << ke->inc << " ";
@@ -267,6 +268,7 @@ void HatParams::PrintKeplerianElements(EventParams *ep) {
 		cout << ke->M << " ";
 		delete ke;
 	}
+	cout.unsetf(ios_base::scientific);
 	cout << endl;
 }
 

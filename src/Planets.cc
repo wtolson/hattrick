@@ -20,6 +20,8 @@ Planets::Planets() {
 	numPlanets = 0;
 	mass = 0;
 	y = 0;
+	isDynamic = 0;
+	dynamicConstants = 0;
 }
 
 Planets::Planets(unsigned int N) {
@@ -27,6 +29,8 @@ Planets::Planets(unsigned int N) {
 	numPlanets = 0;
 	mass = new double[capacity];
 	y = new double[6 * capacity];
+	isDynamic = new bool[capacity];
+	dynamicConstants = new KeplerianElements*[capacity];
 }
 
 Planets::Planets(const Planets& p) {
@@ -34,9 +38,14 @@ Planets::Planets(const Planets& p) {
 	this->numPlanets = p.numPlanets;
 	this->mass = new double[capacity];
 	this->y = new double[6 * capacity];
+	this->isDynamic = new bool[capacity];
+	this->dynamicConstants = new KeplerianElements*[capacity];
 
-	for (int i = 0; i < numPlanets; i++)
+	for (int i = 0; i < numPlanets; i++) {
 		this->mass[i] = p.mass[i];
+		this->isDynamic[i] = p.isDynamic[i];
+		this->dynamicConstants[i] = p.dynamicConstants[i];
+	}
 
 	for (int i = 0; i < 6 * numPlanets; i++)
 		this->y[i] = p.y[i];
@@ -47,9 +56,15 @@ Planets::~Planets() {
 	mass = 0;
 	delete[] y;
 	y = 0;
+	delete[] isDynamic;
+	isDynamic = 0;
+	for (int i = 0; i < numPlanets; i++)
+		delete dynamicConstants[i];
+	delete[] dynamicConstants;
+	dynamicConstants = 0;
 }
 
-bool Planets::AddPlanet(double mass, double x[3], double v[3]) {
+bool Planets::AddPlanet(double mass, double x[3], double v[3], bool isDynamic) {
 	if (numPlanets == capacity)
 		return false;
 	this->mass[numPlanets] = Gravity::G * mass;
@@ -57,16 +72,28 @@ bool Planets::AddPlanet(double mass, double x[3], double v[3]) {
 		X(numPlanets, i) = x[i];
 	for (int i = 0; i < 3; i++)
 		V(numPlanets, i) = v[i];
+	this->isDynamic[numPlanets] = isDynamic;
+	if (isDynamic)
+		this->dynamicConstants[numPlanets] = this->GetKeplerian(numPlanets);
 	numPlanets++;
 
 	return true;
 }
 
 bool Planets::AddPlanet(double mass, double a, double e, double inc,
-		double node, double w, double M) {
+		double node, double w, double M, bool isDynamic) {
 	if (numPlanets == capacity)
 		return false;
 	this->mass[numPlanets] = Gravity::G * mass;
+	this->isDynamic[numPlanets] = isDynamic;
+	if (isDynamic) {
+		this->dynamicConstants[numPlanets]->a = a;
+		this->dynamicConstants[numPlanets]->e = e;
+		this->dynamicConstants[numPlanets]->inc = inc;
+		this->dynamicConstants[numPlanets]->node = node;
+		this->dynamicConstants[numPlanets]->w = w;
+		this->dynamicConstants[numPlanets]->M = M;
+	}
 
 	if (numPlanets == 0) {
 		for (int i = 0; i < 3; i++) {
@@ -92,21 +119,21 @@ bool Planets::AddPlanet(double mass, double a, double e, double inc,
 	double B = a * sqrt(1 - e * e) * sin(E);
 
 	for (int i = 0; i < 3; i++)
-		X(numPlanets, i) = X(0,i) + A * P[i] + B * Q[i];
+		X(numPlanets, i) = CM(i) + A * P[i] + B * Q[i];
 
 	double Edot = sqrt(this->mass[0] / (a * a * a)) / (1 - e * cos(E));
 	A = -a * sin(E) * Edot;
 	B = a * sqrt(1 - e * e) * cos(E) * Edot;
 
 	for (int i = 0; i < 3; i++)
-		V(numPlanets, i) = V(0,i) + A * P[i] + B * Q[i];
+		V(numPlanets, i) = VCM(i) + A * P[i] + B * Q[i];
 	numPlanets++;
 
 	return true;
 }
 
-bool Planets::AddPlanet(double mass, KeplerianElements ke) {
-	return AddPlanet(mass, ke.a, ke.e, ke.inc, ke.node, ke.w, ke.M);
+bool Planets::AddPlanet(double mass, KeplerianElements ke, bool isDynamic) {
+	return AddPlanet(mass, ke.a, ke.e, ke.inc, ke.node, ke.w, ke.M, isDynamic);
 }
 
 //TODO: Make in-line
@@ -130,7 +157,7 @@ bool Planets::AddPlanet(double mass, KeplerianElements ke) {
 //	return V(i,k);
 //}
 
-KeplerianElements *Planets::getKeplerian(int i) {
+KeplerianElements *Planets::GetKeplerian(int i) {
 	double xHat[3] = { 1.0, 0.0, 0.0 };
 	//double yHat[3] = { 0.0, 1.0, 0.0 };
 	double zHat[3] = { 0.0, 0.0, 1.0 };
@@ -138,10 +165,10 @@ KeplerianElements *Planets::getKeplerian(int i) {
 	//TODO: ROTATE COORDS.
 	//double refDir[3] = { 1, 0, 0 };
 
-	double imu = 1 / mass[0];
-	double r[3] = R(i,0);
+	double imu = 1 / TotalMass();
+	double r[3] = { X(i,0) - CM(0), X(i,1) - CM(1), X(i,2) - CM(2) };
 	double rMag = sqrt(DOT(r,r));
-	double v[3] = VREL(i,0);
+	double v[3] = { V(i,0) - VCM(0), V(i,1) - VCM(1), V(i,2) - VCM(2) };
 	//cout << "rMag:" << rMag << endl;
 	KeplerianElements *ke = new KeplerianElements;
 	double h[3] = CROSS(r,v);
@@ -181,6 +208,37 @@ KeplerianElements *Planets::getKeplerian(int i) {
 
 	ke->M = E - ke->e * sin(E);
 	return ke;
+}
+
+double Planets::CM(int k) {
+	double cm = 0.0, mtot = TotalMass();
+
+	if (mtot == 0.0)
+		return 0.0;
+
+	for (int i = 0; i < numPlanets; i++)
+		cm += mass[i] * X(i,k);
+
+	return cm / mtot;
+}
+
+double Planets::VCM(int k) {
+	double vcm = 0.0, mtot = TotalMass();
+
+	if (mtot == 0.0)
+		return 0.0;
+
+	for (int i = 0; i < numPlanets; i++)
+		vcm += mass[i] * V(i,k);
+
+	return vcm / mtot;
+}
+
+double Planets::TotalMass() {
+	double mtot = 0.0;
+	for (int i = 0; i < numPlanets; i++)
+		mtot += mass[i];
+	return mtot;
 }
 
 double * Planets::P(int i) {

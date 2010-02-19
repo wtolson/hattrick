@@ -30,9 +30,9 @@ Universe::~Universe() {
 }
 
 void Universe::BigBang() {
+	h = params->GetStep(t, h, p);
 	while (t < params->t1) {
 		integrator->Evolve(t, h, p->PlanetsPointer());
-
 		h = params->GetStep(t, h, p);
 	}
 }
