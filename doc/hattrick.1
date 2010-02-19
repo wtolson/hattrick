@@ -23,15 +23,21 @@ rn (optional): Radius of the nth perturbing body.
 .in 7
 Base system file format:
 .in 10
-n t0 t1 h0 h1 accr printSkip stepType
+n t0 t1 hmin hmax accr stepType numEvents
 .in 10
-m1 x1 y1 z1 vx1 vy1 vz1
+cs1 m1 x1 y1 z1 vx1 vy1 vz1
 .in 10
-m2 x2 y2 z2 vx2 vy2 vz2
+cs2 m2 a2 e2 i2 node2 w2 M2
 .in 10
          ...
 .in 10
-mn xn yn zn vxn vyn vzn
+csn mn xn yn zn vxn vyn vzn
+.in 10
+eventType_1 eventParams_1...
+.in 10
+         ...
+.in 10
+eventType_n eventParams_n...
 
 
 Where:
@@ -57,7 +63,48 @@ skipPrint:
 <0 to print just the closest orbit time.
 .in 13
 stepType: 0 for rk45, 1 for rk8pd, 2 for bsimp.
+.in 13
+cs: Coordinate system (0 for state vectors,
+.in 13
+                       1 for keplarian elements).
 
+Events:
+.in 10
+eventType: 0 for Timed Print,
+.in 10
+           1 for All Orbits,
+.in 10
+           2 for Closest Orbit.
+.in 10
+Timed Print eventParams:
+.in 10
+    printSkip printType
+.in 10
+All Orbits eventParams:
+.in 10
+    planetIndex printType
+.in 10
+Closest Orbits eventParams:
+.in 10
+    planetIndex orbitToFind printType
+
+Where:
+.in 10
+printType: Directions for printing.
+.in 10
+    0) Time only
+.in 10
+    1) State Vectors
+.in 10
+    2) Keplerian Elements
+.in 10
+    3) Total Angular momentum and Energy
+.in 10
+printSkip: Time to skip between print outs.
+.in 10
+planetIndex: Index of planet to watch.
+.in 10
+orbitToFind: Time for which to find the closest orbit.
 
 .SH EXAMPLE
 .in 7
