@@ -322,7 +322,7 @@ void Planets::AdjustDynamics() {
 				double B = a * sqrt(1 - e * e) * sin(E);
 
 				for (int j = 0; j < 3; j++)
-					X(numPlanets, j) = cm0[j] + A * P[j] + B * Q[j];
+					X(i, j) = cm0[j] + A * P[j] + B * Q[j];
 
 				double Edot = sqrt(this->mass[0] / (a * a * a)) / (1 - e * cos(
 						E));
@@ -330,7 +330,7 @@ void Planets::AdjustDynamics() {
 				B = a * sqrt(1 - e * e) * cos(E) * Edot;
 
 				for (int j = 0; j < 3; j++)
-					V(numPlanets, j) = vcm0[j] + A * P[j] + B * Q[j];
+					V(i, j) = vcm0[j] + A * P[j] + B * Q[j];
 			}
 		}
 		for (int i = 0; i < 3; i++) {
