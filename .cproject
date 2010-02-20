@@ -511,7 +511,7 @@
 <option id="gnu.cpp.link.option.paths.2015813734" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 <listOptionValue builtIn="false" value="&quot;C:\MinGW\lib-static&quot;"/>
 </option>
-<option id="gnu.cpp.link.option.libs.3035477" superClass="gnu.cpp.link.option.libs" valueType="libs">
+<option id="gnu.cpp.link.option.libs.3035477" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 <listOptionValue builtIn="false" value="gsl"/>
 <listOptionValue builtIn="false" value="gslcblas"/>
 <listOptionValue builtIn="false" value="m"/>
