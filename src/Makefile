@@ -1,17 +1,18 @@
-CXX      = g++
-CXXFLAGS = -Wall -O3 -ffast-math #Release
-#CXXFLAGS = -Wall -O0 -g #Debug
-#CXXFLAGS += -pg
-CXXLIBS     = -lgsl -lgslcblas -lm
-SOURCE   = hattrick.cc EventsManager.cc Gravity.cc HatParams.cc Integrator.cc Planets.cc Universe.cc voodoomagic.cc
-OBJECTS  = $(SOURCE:.cc=.o)
-VERSION  = 2.0
-REQUIRES = libgsl0ldbl
+CXX        = g++
+CXXFLAGS   = -Wall -O3 -ffast-math #Release
+#CXXFLAGS   = -Wall -O0 -g #Debug
+#CXXFLAGS  += -pg
+CXXLIBS    = -lgsl -lgslcblas -lm
+SOURCE     = hattrick.cc EventsManager.cc Gravity.cc HatParams.cc Integrator.cc Planets.cc Universe.cc voodoomagic.cc
+OBJECTS    = $(SOURCE:.cc=.o)
+VERSION    = 2.0
+REQUIRES   = libgsl0ldbl
 
 all: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(CXXLIBS) -o hattrick $(OBJECTS)
 
 package:
+	cd ..
 	tar -czf hattrick-$(VERSION).tar.gz *
 
 deb:

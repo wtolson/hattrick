@@ -194,8 +194,8 @@ HatParams::HatParams(int argc, char** argv) {
 }
 
 HatParams::~HatParams() {
-	delete p;
 	delete em;
+	delete p;
 }
 
 bool HatParams::IsAwesome() {
