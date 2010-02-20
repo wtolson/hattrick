@@ -65,7 +65,7 @@ private:
 	bool *isDynamic;
 	KeplerianElements **dynamicConstants;
 
-
+	void AdjustDynamics();
 	void grow();
 };
 

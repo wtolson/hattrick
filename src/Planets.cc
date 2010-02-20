@@ -15,6 +15,8 @@ using namespace std;
 
 #include "HatUtil.h"
 
+#define SMALLNUM 1E-5
+
 Planets::Planets() {
 	capacity = 0;
 	numPlanets = 0;
@@ -73,10 +75,15 @@ bool Planets::AddPlanet(double mass, double x[3], double v[3], bool isDynamic) {
 	for (int i = 0; i < 3; i++)
 		V(numPlanets, i) = v[i];
 	this->isDynamic[numPlanets] = isDynamic;
-	if (isDynamic)
+	if (isDynamic) {
+		this->dynamicConstants[numPlanets] = new KeplerianElements;
 		this->dynamicConstants[numPlanets] = this->GetKeplerian(numPlanets);
+	} else {
+		this->dynamicConstants[numPlanets] = 0;
+	}
 	numPlanets++;
 
+	AdjustDynamics();
 	return true;
 }
 
@@ -87,12 +94,15 @@ bool Planets::AddPlanet(double mass, double a, double e, double inc,
 	this->mass[numPlanets] = Gravity::G * mass;
 	this->isDynamic[numPlanets] = isDynamic;
 	if (isDynamic) {
+		this->dynamicConstants[numPlanets] = new KeplerianElements;
 		this->dynamicConstants[numPlanets]->a = a;
 		this->dynamicConstants[numPlanets]->e = e;
 		this->dynamicConstants[numPlanets]->inc = inc;
 		this->dynamicConstants[numPlanets]->node = node;
 		this->dynamicConstants[numPlanets]->w = w;
 		this->dynamicConstants[numPlanets]->M = M;
+	} else {
+		this->dynamicConstants[numPlanets] = 0;
 	}
 
 	if (numPlanets == 0) {
@@ -108,7 +118,7 @@ bool Planets::AddPlanet(double mass, double a, double e, double inc,
 	do {
 		E0 = E;
 		E = E0 - (E0 - e * sin(E0) - M) / (1 - e * cos(E0));
-	} while (abs(E - E0) > 1E-5);
+	} while (abs(E - E0) > SMALLNUM);
 
 	double P[3] = { cos(w) * cos(node) - sin(w) * cos(inc) * sin(node), cos(w)
 			* sin(node) + sin(w) * cos(inc) * cos(node), sin(w) * sin(inc) };
@@ -129,6 +139,7 @@ bool Planets::AddPlanet(double mass, double a, double e, double inc,
 		V(numPlanets, i) = VCM(i) + A * P[i] + B * Q[i];
 	numPlanets++;
 
+	AdjustDynamics();
 	return true;
 }
 
@@ -275,6 +286,60 @@ double Planets::U(int i) {
 
 double Planets::E(int i) {
 	return K(i) + U(i);
+}
+
+void Planets::AdjustDynamics() {
+	double dcm[3], cm0[3];
+	double dvcm[3], vcm0[3];
+
+	do {
+		for (int i = 0; i < 3; i++) {
+			cm0[i] = CM(i);
+			vcm0[i] = VCM(i);
+		}
+		for (int i = 0; i < numPlanets; i++) {
+			if (isDynamic[i]) {
+				double &a = dynamicConstants[i]->a;
+				double &e = dynamicConstants[i]->e;
+				double &inc = dynamicConstants[i]->inc;
+				double &node = dynamicConstants[i]->node;
+				double &w = dynamicConstants[i]->w;
+				double &M = dynamicConstants[i]->M;
+
+				double E = M, E0;
+				do {
+					E0 = E;
+					E = E0 - (E0 - e * sin(E0) - M) / (1 - e * cos(E0));
+				} while (abs(E - E0) > SMALLNUM);
+
+				double P[3] = { cos(w) * cos(node) - sin(w) * cos(inc) * sin(
+						node), cos(w) * sin(node) + sin(w) * cos(inc) * cos(
+						node), sin(w) * sin(inc) };
+				double Q[3] = { -sin(w) * cos(node) - cos(w) * cos(inc) * sin(
+						node), -sin(w) * sin(node) + cos(w) * cos(inc) * cos(
+						node), sin(inc) * cos(w) };
+				double A = a * (cos(E) - e);
+				double B = a * sqrt(1 - e * e) * sin(E);
+
+				for (int j = 0; j < 3; j++)
+					X(numPlanets, j) = cm0[j] + A * P[j] + B * Q[j];
+
+				double Edot = sqrt(this->mass[0] / (a * a * a)) / (1 - e * cos(
+						E));
+				A = -a * sin(E) * Edot;
+				B = a * sqrt(1 - e * e) * cos(E) * Edot;
+
+				for (int j = 0; j < 3; j++)
+					V(numPlanets, j) = vcm0[j] + A * P[j] + B * Q[j];
+			}
+		}
+		for (int i = 0; i < 3; i++) {
+			dcm[i] = CM(i) - cm0[i];
+			dvcm[i] = VCM(i) - vcm0[i];
+		}
+	} while ((sqrt(DOT(dcm,dcm)) > SMALLNUM) && (sqrt(DOT(dvcm,dvcm))
+			> SMALLNUM));
+
 }
 
 void Planets::grow() {
