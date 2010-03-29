@@ -23,28 +23,13 @@ public:
 			double node = 0.0, double w = 0.0, double M = 0.0);
 	bool AddPlanet(double mass, KeplerianElements ke);
 
-	double * PlanetsPointer() {
-		return y;
-	}
-	;
-	int N() {
-		return numPlanets;
-	}
-	;
-	double M(int i) {
-		return mass[i];
-	}
-	;
+	double * PlanetsPointer();
+	int N();
+	double M(int i);
 
 	//Get values for current Planets.
-	double x(int i, int k) {
-		return y[6 * i + k];
-	}
-	;
-	double v(int i, int k) {
-		return y[6 * i + k + 3];
-	}
-	;
+	double x(int i, int k);
+	double v(int i, int k);
 
 	KeplerianElements *GetKeplerian(int i);
 	double TotalMass();
@@ -67,5 +52,25 @@ private:
 
 	void grow();
 };
+
+inline double* Planets::PlanetsPointer() {
+	return y;
+}
+
+inline int Planets::N() {
+	return numPlanets;
+}
+
+inline double Planets::M(int i) {
+	return mass[i];
+}
+
+inline double Planets::x(int i, int k) {
+	return y[6 * i + k];
+}
+
+inline double Planets::v(int i, int k) {
+	return y[6 * i + k + 3];
+}
 
 #endif /* PLANET_H_ */

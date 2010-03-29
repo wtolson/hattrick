@@ -25,6 +25,10 @@ Universe::Universe(HatParams * params) {
 }
 
 Universe::~Universe() {
+	cout << integrator->GetSteps() << " ";
+	for (int i = 0; i < 6*p->N(); i++) {
+		cout << integrator->GetError()[i] << " ";
+	}
 	delete p;
 	delete integrator;
 }

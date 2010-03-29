@@ -7,6 +7,7 @@
 // Class to encapsulate a gsl ODE integrator.
 
 #include "Integrator.h"
+#include <cmath>
 
 //Step types.
 const int Integrator::RKF45 = 0;
@@ -62,14 +63,16 @@ Integrator::~Integrator() {
 bool Integrator::Evolve(double &t, double &h, double y[]) {
 
 	int status = gsl_odeiv_evolve_apply(evolve, con, step, &sys, &t, t1, &h, y);
-
 	SumError(evolve->yerr);
-
 	return status;
 }
 
-double * Integrator::GetError() {
+double * Integrator::GetStepError() {
 	return evolve->yerr;
+}
+
+double * Integrator::GetError() {
+	return totalError;
 }
 
 int Integrator::GetSteps() {
@@ -78,6 +81,6 @@ int Integrator::GetSteps() {
 
 void Integrator::SumError(double yerr[]) {
 	for (int i = 0; i < dim; i++)
-		totalError[i] += yerr[i];
+		totalError[i] += yerr[i]*yerr[i];
 }
 

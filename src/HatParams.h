@@ -27,10 +27,10 @@ public:
 	bool IsAwesome();
 	double GetStep(double t, double h, Planets *p);
 
-	static void PrintTime(EventParams *params);
-	static void PrintStateVectors(EventParams * params);
-	static void PrintKeplerianElements(EventParams *params);
-	static void PrintDiagnostics(EventParams *params);
+	static void PrintTime(Event *event);
+	static void PrintStateVectors(Event *event);
+	static void PrintKeplerianElements(Event *event);
+	static void PrintDiagnostics(Event *event);
 
 	Planets GetPlanets();
 

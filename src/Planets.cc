@@ -93,14 +93,14 @@ bool Planets::AddPlanet(double mass, double a, double e, double inc,
 	double B = a * sqrt(1 - e * e) * sin(E);
 
 	for (int i = 0; i < 3; i++)
-		X(numPlanets, i) = CM(i) + A * P[i] + B * Q[i];
+		X(numPlanets, i) = X(0,i) + A * P[i] + B * Q[i];
 
 	double Edot = sqrt(this->mass[0] / (a * a * a)) / (1 - e * cos(E));
 	A = -a * sin(E) * Edot;
 	B = a * sqrt(1 - e * e) * cos(E) * Edot;
 
 	for (int i = 0; i < 3; i++)
-		V(numPlanets, i) = VCM(i) + A * P[i] + B * Q[i];
+		V(numPlanets, i) = V(0,i) + A * P[i] + B * Q[i];
 	numPlanets++;
 	return true;
 }
@@ -117,7 +117,7 @@ KeplerianElements *Planets::GetKeplerian(int i) {
 	//TODO: ROTATE COORDS.
 	//double refDir[3] = { 1, 0, 0 };
 
-	double imu = 1 / TotalMass();
+	double imu = 1 / mass[0];
 	double r[3] = { X(i,0) - CM(0), X(i,1) - CM(1), X(i,2) - CM(2) };
 	double rMag = sqrt(DOT(r,r));
 	double v[3] = { V(i,0) - VCM(0), V(i,1) - VCM(1), V(i,2) - VCM(2) };
@@ -193,13 +193,26 @@ double Planets::VCM(int k) {
 	return vcm / mtot;
 }
 
-bool IsCM() {
-	//TODO
-	return false;
+bool Planets::IsCM() {
+	bool ans = true;
+	for (int i = 0; i < 3; i++)
+		if (abs(CM(i)) > SMALLNUM || abs(VCM(i)) > SMALLNUM) {
+			ans = false;
+			break;
+		}
+	return ans;
 }
 
-void MoveToCM() {
-	//TODO
+void Planets::MoveToCM() {
+	double cm[3] = { CM(0), CM(1), CM(2) };
+	double vcm[3] = { VCM(0), VCM(1), VCM(2) };
+
+	for (int i = 0; i < numPlanets; i++) {
+		for (int j = 0; j < numPlanets; j++) {
+			X(i,j) -= cm[i];
+			V(i,j) -= vcm[i];
+		}
+	}
 }
 
 double * Planets::P(int i) {

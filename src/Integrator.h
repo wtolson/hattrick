@@ -26,6 +26,7 @@ public:
 
 	bool Evolve(double &t, double &h, double y[]);
 	double * GetError();
+	double * GetStepError();
 	int GetSteps();
 
 private:

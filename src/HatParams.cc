@@ -119,7 +119,7 @@ HatParams::HatParams(int argc, char** argv) {
 	}
 
 	em = new EventsManager(numEvents);
-	EventParams *ep;
+	EventParams ep;
 	Action action;
 	int printType;
 
@@ -129,8 +129,7 @@ HatParams::HatParams(int argc, char** argv) {
 		switch (eventType) {
 		case 0: {
 			//Create Timed Print event.
-			ep = new EventParams;
-			ep->customParamsType = PrintParams::paramType;
+			ep.customParamsType = PrintParams::paramType;
 			PrintParams *pp = new PrintParams;
 			ep->customParams = pp;
 			pp->tPrint = t0;
@@ -191,6 +190,7 @@ HatParams::HatParams(int argc, char** argv) {
 		}
 	}
 	ifs.close();
+	p->MoveToCM();
 }
 
 HatParams::~HatParams() {
