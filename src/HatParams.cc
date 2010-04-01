@@ -107,7 +107,7 @@ HatParams::HatParams(int argc, char** argv) {
 
 	em = new EventsManager(numEvents);
 
-	Action action;
+	Action action = 0;
 	Event *event;
 
 	for (int i = 0; i < numEvents; i++) {
@@ -145,8 +145,8 @@ HatParams::HatParams(int argc, char** argv) {
 		ifs >> action;
 		if (action == NULL) {
 			delete event;
-			cerr << "Unrecognized print type for event "
-					<< i + 1 << " in \"" << argv[1] << "\"." << endl;
+			cerr << "Unrecognized print type for event " << i + 1 << " in \""
+					<< argv[1] << "\"." << endl;
 			printHelp();
 			return;
 		}
@@ -190,7 +190,7 @@ double HatParams::GetStep(double t, double h, Planets *p) {
 }
 
 istream& operator>>(istream& i, Action& a) {
-	int type;
+	int type = -1;
 	i >> type;
 	switch (type) {
 	case 0:

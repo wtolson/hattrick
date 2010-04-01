@@ -18,7 +18,6 @@ Event::Event() :
 Event::~Event() {
 }
 
-
 TimedEvent::TimedEvent(double printSkip, double initialPrint) :
 	printSkip(printSkip), tPrint(initialPrint) {
 }
@@ -42,8 +41,8 @@ bool TimedEvent::Check() {
 }
 
 OrbitEvent::OrbitEvent(double planetIndex, bool findAll, double orbitToFind) :
-	first(0), found(false), planetIndex(planetIndex), findAll(findAll),
-			orbitToFind(orbitToFind) {
+	first(true), found(false), planetIndex(planetIndex), findAll(findAll),
+			orbitToFind(orbitToFind), xLast(0) {
 }
 
 OrbitEvent::~OrbitEvent() {
@@ -60,7 +59,6 @@ bool OrbitEvent::Check() {
 	if (first) {
 		xLast = (p->x(planetIndex, 1) - p->x(0, 1));
 		first = false;
-		found = false;
 		return false;
 	}
 
