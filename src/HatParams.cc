@@ -217,6 +217,7 @@ istream& operator>>(istream& i, Action& a) {
 	default:
 		a = NULL;
 	}
+	return i;
 }
 
 void HatParams::PrintTime(Event *event) {
