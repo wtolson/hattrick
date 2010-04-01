@@ -195,14 +195,20 @@ istream& operator>>(istream& i, Action& a) {
 	switch (type) {
 	case 0:
 		a = &HatParams::PrintTime;
+		break;
 	case 1:
 		a = &HatParams::PrintStateVectors;
+		break;
 	case 2:
 		a = &HatParams::PrintKeplerianElements;
+		break;
 	case 3:
 		a = &HatParams::PrintDiagnostics;
+		break;
 	default:
+		cout << "type: " << type << endl;
 		a = NULL;
+		break;
 	}
 	return i;
 }
