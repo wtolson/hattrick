@@ -112,8 +112,9 @@ inline Planets *OrbitEvent::GetPlanets() {
 //Random inline:
 
 inline double abs(double num) {
-	if (num < 0)
+	if (num < 0.0) {
 		num = -num;
+	}
 	return num;
 }
 

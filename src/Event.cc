@@ -42,7 +42,7 @@ bool TimedEvent::Check() {
 
 OrbitEvent::OrbitEvent(double planetIndex, bool findAll, double orbitToFind) :
 	first(true), found(false), planetIndex(planetIndex), findAll(findAll),
-			orbitToFind(orbitToFind), xLast(0) {
+			orbitToFind(orbitToFind), xLast(0), tLast(0) {
 }
 
 OrbitEvent::~OrbitEvent() {
