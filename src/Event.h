@@ -102,11 +102,19 @@ inline void Event::SetSnapShot(double time, Planets *p) {
 //Inline for OrbitEvent:
 
 inline double OrbitEvent::GetTime() {
-	return tLast;
+	if (findAll) {
+		return time;
+	} else {
+		return tLast;
+	}
 }
 
 inline Planets *OrbitEvent::GetPlanets() {
-	return &pLast;
+	if (findAll) {
+		return p;
+	} else {
+		return &pLast;
+	}
 }
 
 //Random inline:
