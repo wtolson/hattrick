@@ -10,6 +10,8 @@
 #define EVENT_H_
 
 #include "Planets.h"
+#include <istream>
+using namespace std;
 
 class Event {
 public:
@@ -31,9 +33,22 @@ protected:
 	static Planets *p;
 };
 
+class TimedEvent: public Event {
+public:
+	TimedEvent(double printSkip, double initialPrint);
+	~TimedEvent();
+
+	Event *NewCopy();
+	bool Check();
+
+private:
+	double printSkip; // The time to skip between prints.
+	double tPrint; // Time to print
+};
+
 class OrbitEvent: public Event {
 public:
-	OrbitEvent();
+	OrbitEvent(double planetIndex, bool findAll, double orbitToFind = 0);
 	~OrbitEvent();
 
 	Event *NewCopy();
@@ -46,9 +61,10 @@ private:
 	static const int paramType = 3;
 
 	bool first; // True if uninitialized
-	bool findAll;
 	bool found;
+
 	int planetIndex; // Planet index #
+	bool findAll;
 	double orbitToFind; // Time of orbit to find
 
 
@@ -62,31 +78,12 @@ private:
 	double dx; // Direction
 	double dy;
 	double dz;
-
 };
 
-class TimedEvent: public Event {
-public:
-	TimedEvent(double printSkip, double firstPrint = 0);
-	~TimedEvent();
-
-	Event *NewCopy();
-	bool Check();
-
-private:
-	double printSkip; // The time to skip between prints.
-	double tPrint; // Time to print
-};
-
-//Inline functions:
+//Inline for Events:
 
 inline double Event::GetNextEvent() {
 	return nextEvent;
-}
-
-inline void Event::SetSnapShot(double time, Planets *p) {
-	Event::time = time;
-	Event::p = p;
 }
 
 inline double Event::GetTime() {
@@ -97,12 +94,27 @@ inline Planets *Event::GetPlanets() {
 	return p;
 }
 
+inline void Event::SetSnapShot(double time, Planets *p) {
+	Event::time = time;
+	Event::p = p;
+}
+
+//Inline for OrbitEvent:
+
 inline double OrbitEvent::GetTime() {
 	return tLast;
 }
 
 inline Planets *OrbitEvent::GetPlanets() {
 	return &pLast;
+}
+
+//Random inline:
+
+inline double abs(double num) {
+	if (num < 0)
+		num = -num;
+	return num;
 }
 
 #endif /* EVENT_H_ */

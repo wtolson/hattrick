@@ -6,23 +6,28 @@
 //
 //
 
-#include <algorithm>
 #include "Event.h"
 
 Planets *Event::p = 0;
+double Event::time = 0;
 
 Event::Event() :
 	nextEvent(-1) {
+}
 
+Event::~Event() {
+}
+
+
+TimedEvent::TimedEvent(double printSkip, double initialPrint) :
+	printSkip(printSkip), tPrint(initialPrint) {
+}
+
+TimedEvent::~TimedEvent() {
 }
 
 Event *TimedEvent::NewCopy() {
 	return new TimedEvent(*this);
-}
-
-TimedEvent::TimedEvent(double printSkip, double firstPrint) :
-	printSkip(printSkip), tPrint(firstPrint) {
-
 }
 
 bool TimedEvent::Check() {
@@ -34,6 +39,18 @@ bool TimedEvent::Check() {
 
 	nextEvent = tPrint - time;
 	return success;
+}
+
+OrbitEvent::OrbitEvent(double planetIndex, bool findAll, double orbitToFind) :
+	first(0), found(false), planetIndex(planetIndex), findAll(findAll),
+			orbitToFind(orbitToFind) {
+}
+
+OrbitEvent::~OrbitEvent() {
+}
+
+Event *OrbitEvent::NewCopy() {
+	return new OrbitEvent(*this);
 }
 
 bool OrbitEvent::Check() {

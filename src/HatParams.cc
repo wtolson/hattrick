@@ -119,54 +119,33 @@ HatParams::HatParams(int argc, char** argv) {
 	}
 
 	em = new EventsManager(numEvents);
-	EventParams ep;
+
 	Action action;
-	int printType;
+	Event *event;
 
 	for (int i = 0; i < numEvents; i++) {
 		int eventType;
 		ifs >> eventType;
 		switch (eventType) {
 		case 0: {
-			//Create Timed Print event.
-			ep.customParamsType = PrintParams::paramType;
-			PrintParams *pp = new PrintParams;
-			ep->customParams = pp;
-			pp->tPrint = t0;
-
-			ifs >> pp->printSkip;
-
-			ifs >> printType;
-			action = GetPrint(printType);
+			//Create timed event.
+			double printSkip, initialPrint;
+			ifs >> printSkip >> initialPrint;
+			event = new TimedEvent(printSkip, initialPrint);
 			break;
 		}
 		case 1: {
 			//Create All Orbits event.
-			ep = new EventParams;
-			ep->customParamsType = AllOrbitsParams::paramType;
-			AllOrbitsParams *op = new AllOrbitsParams;
-			ep->customParams = op;
-			op->first = true;
-
-			ifs >> op->planetIndex;
-
-			ifs >> printType;
-			action = GetPrint(printType);
-			break;
-		}
-		case 2: {
-			//Create Closest Orbit event.
-			ep = new EventParams;
-			ep->customParamsType = ClosestOrbitParams::paramType;
-			ClosestOrbitParams *op = new ClosestOrbitParams;
-			ep->customParams = op;
-			op->first = 0;
-
-			ifs >> op->planetIndex;
-			ifs >> op->orbitToFind;
-
-			ifs >> printType;
-			action = GetPrint(printType);
+			double planetIndex;
+			bool findAll;
+			ifs >> planetIndex >> findAll;
+			if (findAll) {
+				event = new OrbitEvent(planetIndex, findAll);
+				break;
+			}
+			double orbitToFind;
+			ifs >> orbitToFind;
+			event = new OrbitEvent(planetIndex, findAll, orbitToFind);
 			break;
 		}
 		default: {
@@ -176,13 +155,16 @@ HatParams::HatParams(int argc, char** argv) {
 			return;
 		}
 		}
+		ifs >> action;
 		if (action == NULL) {
-			cerr << "Unrecognized print type (" << printType << ") for event "
+			delete event;
+			cerr << "Unrecognized print type for event "
 					<< i + 1 << " in \"" << argv[1] << "\"." << endl;
 			printHelp();
 			return;
 		}
-		bool status = em->AddEvent(eventType, ep, action);
+		bool status = em->AddEvent(*event, action);
+		delete event;
 		if (!status) {
 			cerr << "Error adding event " << i + 1 << " in \"" << argv[1]
 					<< "\"." << endl;
@@ -220,30 +202,31 @@ double HatParams::GetStep(double t, double h, Planets *p) {
 	return h;
 }
 
-inline Action HatParams::GetPrint(int printType) {
-	switch (printType) {
+istream& operator>>(istream& i, Action& a) {
+	int type;
+	i >> type;
+	switch (type) {
 	case 0:
-		return &PrintTime;
+		a = &HatParams::PrintTime;
 	case 1:
-		return &PrintStateVectors;
+		a = &HatParams::PrintStateVectors;
 	case 2:
-		return &PrintKeplerianElements;
+		a = &HatParams::PrintKeplerianElements;
 	case 3:
-		return &PrintDiagnostics;
+		a = &HatParams::PrintDiagnostics;
 	default:
-		return NULL;
+		a = NULL;
 	}
-
 }
 
-void HatParams::PrintTime(EventParams *ep) {
-	cout << ep->time << endl;
+void HatParams::PrintTime(Event *event) {
+	cout << event->GetTime() << endl;
 }
 
-void HatParams::PrintStateVectors(EventParams *ep) {
-	Planets &p = *ep->p;
+void HatParams::PrintStateVectors(Event *event) {
+	Planets &p = *event->GetPlanets();
 
-	cout << ep->time << " ";
+	cout << event->GetTime() << " ";
 	for (int i = 0; i < p.N(); i++) {
 		for (int k = 0; k < 3; k++)
 			cout << " " << p.x(i, k);
@@ -253,10 +236,10 @@ void HatParams::PrintStateVectors(EventParams *ep) {
 	cout << endl;
 }
 
-void HatParams::PrintKeplerianElements(EventParams *ep) {
-	Planets &p = *ep->p;
+void HatParams::PrintKeplerianElements(Event *event) {
+	Planets &p = *event->GetPlanets();
 
-	cout << ep->time << " ";
+	cout << event->GetTime() << " ";
 	cout.setf(ios_base::scientific);
 	for (int i = 1; i < p.N(); i++) {
 		KeplerianElements *ke = p.GetKeplerian(i);
@@ -272,10 +255,10 @@ void HatParams::PrintKeplerianElements(EventParams *ep) {
 	cout << endl;
 }
 
-void HatParams::PrintDiagnostics(EventParams *ep) {
-	Planets &p = *ep->p;
-	cout << ep->time << " ";
+void HatParams::PrintDiagnostics(Event *event) {
+	Planets &p = *event->GetPlanets();
 
+	cout << event->GetTime() << " ";
 	double L[3] = { 0.0, 0.0, 0.0 };
 
 	for (int funyuns = 0; funyuns < p.N(); funyuns++) {
@@ -346,12 +329,13 @@ void HatParams::printHelp(string errMssg) {
 
 	cerr << "Where:" << endl;
 	cerr << "    printType: Directions for printing." << endl;
-	cerr <<	"        0) Time only" << endl;
-	cerr <<	"        1) State Vectors" << endl;
-	cerr <<	"        2) Keplerian Elements" << endl;
-	cerr <<	"        3) Total Angular momentum and Energy" << endl;
+	cerr << "        0) Time only" << endl;
+	cerr << "        1) State Vectors" << endl;
+	cerr << "        2) Keplerian Elements" << endl;
+	cerr << "        3) Total Angular momentum and Energy" << endl;
 	cerr << "    printSkip: Time to skip between print outs." << endl;
 	cerr << "    planetIndex: Index of planet to watch." << endl;
-	cerr << "    orbitToFind: Time for which to find the closest orbit." << endl;
+	cerr << "    orbitToFind: Time for which to find the closest orbit."
+			<< endl;
 }
 

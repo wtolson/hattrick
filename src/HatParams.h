@@ -43,4 +43,6 @@ private:
 	void printHelp(string errMssg = "");
 };
 
+istream& operator>>(istream& i, Action& a);
+
 #endif /* HATPARAMS_H */
