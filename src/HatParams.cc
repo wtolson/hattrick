@@ -34,14 +34,7 @@ HatParams::HatParams(int argc, char** argv) {
 
 	int n1, n2 = 0, numEvents;
 
-	ifs >> n1;
-	ifs >> t0;
-	ifs >> t1;
-	ifs >> hmin;
-	ifs >> hmax;
-	ifs >> accr;
-	ifs >> stepType;
-	ifs >> numEvents;
+	ifs >> n1 >> t0 >> t1 >> hmin >> hmax >> accr >> stepType >> numEvents;
 
 	if (stepType != 0 && stepType != 1 && stepType != 2) {
 		printHelp("Invalid integration step type.");
@@ -67,8 +60,7 @@ HatParams::HatParams(int argc, char** argv) {
 	for (int i = 0; i < n1; i++) {
 		int cs;
 		double m;
-		ifs >> cs;
-		ifs >> m;
+		ifs >> cs >> m;
 		bool status;
 		switch (cs) {
 		case 0:
@@ -85,12 +77,7 @@ HatParams::HatParams(int argc, char** argv) {
 		case 1:
 			KeplerianElements ke;
 
-			ifs >> ke.a;
-			ifs >> ke.e;
-			ifs >> ke.inc;
-			ifs >> ke.node;
-			ifs >> ke.w;
-			ifs >> ke.M;
+			ifs >> ke.a >> ke.e >> ke.inc >> ke.node >> ke.w >> ke.M;
 
 			status = p->AddPlanet(m, ke);
 			break;
