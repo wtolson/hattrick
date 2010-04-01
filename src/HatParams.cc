@@ -107,7 +107,7 @@ HatParams::HatParams(int argc, char** argv) {
 
 	em = new EventsManager(numEvents);
 
-	Action action = 0;
+	Action action;
 	Event *event;
 
 	for (int i = 0; i < numEvents; i++) {
