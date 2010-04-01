@@ -51,6 +51,26 @@ Planets::~Planets() {
 	y = 0;
 }
 
+Planets& Planets::operator=(const Planets& p) {
+	delete[] mass;
+	mass = 0;
+	delete[] y;
+	y = 0;
+
+	this->capacity = p.capacity;
+	this->numPlanets = p.numPlanets;
+	this->mass = new double[capacity];
+	this->y = new double[6 * capacity];
+
+	for (int i = 0; i < numPlanets; i++)
+		this->mass[i] = p.mass[i];
+
+	for (int i = 0; i < 6 * numPlanets; i++)
+		this->y[i] = p.y[i];
+
+	return *this;
+}
+
 bool Planets::AddPlanet(double mass, double x[3], double v[3]) {
 	if (numPlanets == capacity)
 		return false;

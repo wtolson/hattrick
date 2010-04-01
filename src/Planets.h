@@ -18,6 +18,7 @@ public:
 	Planets(const Planets& p);
 	~Planets();
 
+	Planets& operator=(const Planets& p);
 	bool AddPlanet(double mass, double x[3], double v[3]);
 	bool AddPlanet(double mass, double a, double e = 0.0, double inc = 0.0,
 			double node = 0.0, double w = 0.0, double M = 0.0);
