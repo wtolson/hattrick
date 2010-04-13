@@ -13,16 +13,14 @@
 
 using namespace std;
 
-HatParams::HatParams(int argc, char** argv) {
-	success = true;
+HatParams::HatParams(int argc, char** argv) :
+	p(0), em(0), success(true) {
 
 	if (argc == 1) {
 		success = false;
 		printHelp();
 		return;
 	}
-
-	success = true;
 
 	ifstream ifs(argv[1], ifstream::in);
 
