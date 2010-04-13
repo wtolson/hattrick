@@ -47,7 +47,7 @@ bool EventsManager::AddEvent(Event& event, Action action) {
 	return true;
 }
 
-bool EventsManager::CheckEvents(double t, Planets * p) {
+bool EventsManager::CheckEvents(double t, const Planets &p) {
 	bool status = false;
 	Event::SetSnapShot(t, p);
 	for (int i = 0; i < numEvents; i++) {

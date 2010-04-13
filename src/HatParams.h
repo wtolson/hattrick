@@ -25,7 +25,7 @@ public:
 	~HatParams();
 
 	bool IsAwesome();
-	double GetStep(double t, double h, Planets *p);
+	double GetStep(double t, double h, const Planets &p);
 
 	static void PrintTime(Event *event);
 	static void PrintStateVectors(Event *event);

@@ -175,7 +175,7 @@ Planets HatParams::GetPlanets() {
 	return *p;
 }
 
-double HatParams::GetStep(double t, double h, Planets *p) {
+double HatParams::GetStep(double t, double h, const Planets &p) {
 
 	em->CheckEvents(t, p);
 
@@ -218,7 +218,7 @@ void HatParams::PrintTime(Event *event) {
 }
 
 void HatParams::PrintStateVectors(Event *event) {
-	Planets &p = *event->GetPlanets();
+	const Planets &p = *event->GetPlanets();
 
 	cout << event->GetTime() << " ";
 	for (int i = 0; i < p.N(); i++) {
@@ -231,7 +231,7 @@ void HatParams::PrintStateVectors(Event *event) {
 }
 
 void HatParams::PrintKeplerianElements(Event *event) {
-	Planets &p = *event->GetPlanets();
+	const Planets &p = *event->GetPlanets();
 
 	cout << event->GetTime() << " ";
 	cout.setf(ios_base::scientific);
@@ -250,7 +250,7 @@ void HatParams::PrintKeplerianElements(Event *event) {
 }
 
 void HatParams::PrintDiagnostics(Event *event) {
-	Planets &p = *event->GetPlanets();
+	const Planets &p = *event->GetPlanets();
 
 	cout << event->GetTime() << " ";
 	double L[3] = { 0.0, 0.0, 0.0 };

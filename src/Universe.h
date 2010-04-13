@@ -14,10 +14,10 @@
 
 class Universe {
 public:
-	Planets *p;
+	Planets p;
 
-	Universe(HatParams * params);
-	virtual ~Universe();
+	Universe(HatParams &params);
+	~Universe();
 
 	void BigBang();
 
@@ -31,8 +31,8 @@ public:
 	double E();
 
 private:
-	HatParams * params;
-	Integrator * integrator;
+	HatParams &params;
+	Integrator integrator;
 	double t, h;
 
 	//friend double HatParams::GetStep(Universe * u);

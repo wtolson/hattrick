@@ -21,7 +21,7 @@
 
 
 // C++ Libraries
-#include <iostream>
+//#include <iostream>
 //#include <cmath>
 
 // My Libraries
@@ -35,22 +35,19 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-	Universe *u;
+	Universe *theUniverse;
 
 	// Read in parameters.
-	HatParams *params = new HatParams(argc, argv);
-	if (params->IsAwesome()) {
-		u = new Universe(params);
+	HatParams params(argc, argv);
+	if (params.IsAwesome()) {
+		theUniverse = new Universe(params);
 	} else {
-		delete params;
 		return 1;
 	}
 
 	sacrificeChicken();
-	u->BigBang();
+	theUniverse->BigBang();
 
-	delete u;
-	delete params;
-
+	delete theUniverse;
 	return 0;
 }

@@ -24,27 +24,28 @@ public:
 			double node = 0.0, double w = 0.0, double M = 0.0);
 	bool AddPlanet(double mass, KeplerianElements ke);
 
-	double * PlanetsPointer();
-	int N();
-	double M(int i);
+	operator double *() const;
+	operator int() const;
+	int N() const;
+	double M(int i) const;
 
 	//Get values for current Planets.
-	double x(int i, int k);
-	double v(int i, int k);
+	double x(int i, int k) const;
+	double v(int i, int k) const;
 
-	KeplerianElements *GetKeplerian(int i);
-	double TotalMass();
-	double CM(int k);
-	double VCM(int k);
-	bool IsCM();
+	KeplerianElements *GetKeplerian(int i) const;
+	double TotalMass() const;
+	double CM(int k) const;
+	double VCM(int k) const;
+	bool IsCM() const;
 	void MoveToCM();
 
 	//Diagnostics
-	double * P(int i);
-	double * L(int i);
-	double K(int i);
-	double U(int i);
-	double E(int i);
+	double * P(int i) const;
+	double * L(int i) const;
+	double K(int i) const;
+	double U(int i) const;
+	double E(int i) const;
 
 private:
 	int numPlanets;
@@ -54,23 +55,27 @@ private:
 	void grow();
 };
 
-inline double* Planets::PlanetsPointer() {
+inline Planets::operator double *() const {
 	return y;
 }
 
-inline int Planets::N() {
+inline Planets::operator int() const {
 	return numPlanets;
 }
 
-inline double Planets::M(int i) {
+inline int Planets::N() const {
+	return numPlanets;
+}
+
+inline double Planets::M(int i) const {
 	return mass[i];
 }
 
-inline double Planets::x(int i, int k) {
+inline double Planets::x(int i, int k) const {
 	return y[6 * i + k];
 }
 
-inline double Planets::v(int i, int k) {
+inline double Planets::v(int i, int k) const {
 	return y[6 * i + k + 3];
 }
 

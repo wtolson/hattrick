@@ -23,7 +23,7 @@ public:
 
 	bool AddEvent(Event& event, Action action);
 
-	bool CheckEvents(double t, Planets *p);
+	bool CheckEvents(double t, const Planets &p);
 	double GetNextEvent();
 
 private:

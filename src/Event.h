@@ -22,15 +22,15 @@ public:
 	virtual bool Check() = 0;
 
 	double GetNextEvent();
-	static void SetSnapShot(double time, Planets *p);
+	static void SetSnapShot(double time, const Planets &p);
 
 	virtual double GetTime();
-	virtual Planets *GetPlanets();
+	virtual const Planets *GetPlanets();
 
 protected:
 	double nextEvent;
 	static double time;
-	static Planets *p;
+	static const Planets *p;
 };
 
 class TimedEvent: public Event {
@@ -55,7 +55,7 @@ public:
 	bool Check();
 
 	double GetTime();
-	Planets *GetPlanets();
+	const Planets *GetPlanets();
 
 private:
 	static const int paramType = 3;
@@ -90,13 +90,13 @@ inline double Event::GetTime() {
 	return time;
 }
 
-inline Planets *Event::GetPlanets() {
+inline const Planets *Event::GetPlanets() {
 	return p;
 }
 
-inline void Event::SetSnapShot(double time, Planets *p) {
+inline void Event::SetSnapShot(double time, const Planets &p) {
 	Event::time = time;
-	Event::p = p;
+	Event::p = &p;
 }
 
 //Inline for OrbitEvent:
@@ -109,7 +109,7 @@ inline double OrbitEvent::GetTime() {
 	}
 }
 
-inline Planets *OrbitEvent::GetPlanets() {
+inline const Planets *OrbitEvent::GetPlanets() {
 	if (findAll) {
 		return p;
 	} else {

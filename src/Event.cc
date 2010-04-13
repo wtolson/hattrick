@@ -8,7 +8,7 @@
 
 #include "Event.h"
 
-Planets *Event::p = 0;
+const Planets *Event::p = 0;
 double Event::time = 0;
 
 Event::Event() :
