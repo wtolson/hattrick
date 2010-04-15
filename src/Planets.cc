@@ -10,7 +10,7 @@
 #include "Gravity.h"
 #include "Planets.h"
 
-#include <iostream>
+//#include <iostream>
 using namespace std;
 
 #include "HatUtil.h"

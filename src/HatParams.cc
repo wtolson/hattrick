@@ -9,17 +9,20 @@
 #include <fstream>
 #include <cstdlib>
 #include <cmath>
+
 #include "HatParams.h"
 
 using namespace std;
 
 HatParams::HatParams(int argc, char** argv) :
-	p(0), em(0), success(true) {
+	success(true), p(0), em(0) {
+
+	p = new Planets;
 
 	if (argc == 1) {
-		success = false;
 		printHelp();
 		return;
+		//throw HatExceptions((string("No Arguments.")));
 	}
 
 	ifstream ifs(argv[1], ifstream::in);

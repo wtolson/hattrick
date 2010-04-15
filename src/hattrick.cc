@@ -21,7 +21,7 @@
 
 
 // C++ Libraries
-#include <iostream>
+//#include <iostream>
 //#include <cmath>
 
 // My Libraries
@@ -31,17 +31,20 @@
 
 // Nothing to see here.
 
-using namespace std;
+//using namespace std;
 
 int main(int argc, char** argv) {
 
 	Universe *theUniverse;
+	HatParams *params;
 
 	// Read in parameters.
-	HatParams params(argc, argv);
-	if (params.IsAwesome()) {
-		theUniverse = new Universe(params);
+	params = new HatParams(argc, argv);
+
+	if (params->IsAwesome()) {
+		theUniverse = new Universe(*params);
 	} else {
+		delete params;
 		return 1;
 	}
 
