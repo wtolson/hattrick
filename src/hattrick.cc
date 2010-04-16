@@ -35,16 +35,14 @@
 
 int main(int argc, char** argv) {
 
-	Universe *theUniverse;
-	HatParams *params;
+	Universe *theUniverse;	
 
 	// Read in parameters.
-	params = new HatParams(argc, argv);
+	HatParams params(argc, argv);
 
-	if (params->IsAwesome()) {
-		theUniverse = new Universe(*params);
+	if (params.IsAwesome()) {
+		theUniverse = new Universe(params);
 	} else {
-		delete params;
 		return 1;
 	}
 
