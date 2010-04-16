@@ -18,8 +18,8 @@ Event::Event() :
 Event::~Event() {
 }
 
-TimedEvent::TimedEvent(double printSkip, double initialPrint) :
-	printSkip(printSkip), tPrint(initialPrint) {
+TimedEvent::TimedEvent(double skipTime, double initialEvent) :
+	skipTime(skipTime), tTrigger(initialEvent) {
 }
 
 TimedEvent::~TimedEvent() {
@@ -31,12 +31,12 @@ Event *TimedEvent::NewCopy() const {
 
 bool TimedEvent::Check() {
 	bool success = false;
-	if (time >= tPrint) {
-		tPrint += printSkip;
+	if (time >= tTrigger) {
+		tTrigger += skipTime;
 		success = true;
 	}
 
-	nextEvent = tPrint - time;
+	nextEvent = tTrigger - time;
 	return success;
 }
 

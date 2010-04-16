@@ -13,31 +13,33 @@
 #include <iostream>
 using namespace std;
 
-Universe::Universe(const HatParams &params) :
-	p(params.GetPlanets()), params(params), integrator(params.stepType, 6 * p.N(),
-			params.accr, params.t0, params.t1, p, Gravity::Acceleration,
-			Gravity::Jerk, p), t(params.t0), h(params.hmax) {
+Universe::Universe(const HatParams &params) : // In the beginning there was nothing...
+	p(params.GetPlanets()), // Then God created the planets...
+			params(params), // Referenced the params...
+			integrator(params.stepType, 6 * p.N(), params.accr, params.t0,
+					params.t1, p, Gravity::Acceleration, Gravity::Jerk, p), // Set up the ode solver...
+			t(params.t0), h(params.GetStep(t, params.hmax, p)) {// And created time and steps...
+	// And God saw that it was good.
 }
 
 Universe::~Universe() {
-	cout << integrator.GetSteps() << " ";
-	for (int i = 0; i < 6 * p.N(); i++) {
-		cout << integrator.GetError()[i] << " ";
+//
+//  If we feel like some debugging:
+//
+//	cout << integrator.GetSteps() << " ";
+//	for (int i = 0; i < 6 * p.N(); i++) {
+//		cout << integrator.GetError()[i] << " ";
+//	}
+}
+
+void Universe::BigBang() { // Bang!
+	while (t < params.t1) {  // This is basically the whole program:
+		integrator.Evolve(t, h, p);  // Do math.
+		h = params.GetStep(t, h, p);  // Yay for adaptive step sizing with automatic event control!
 	}
 }
 
-void Universe::BigBang() {
-	h = params.GetStep(t, h, p);
-	while (t < params.t1) {
-		integrator.Evolve(t, h, p);
-		h = params.GetStep(t, h, p);
-	}
-}
-
-double Universe::GetTime() const {
-	return t;
-}
-
+// The momentum of the universe.
 double * Universe::P() const {
 	double * P = new double[3];
 	for (int cheetos = 0; cheetos < 3; cheetos++)
@@ -51,6 +53,7 @@ double * Universe::P() const {
 	return P;
 }
 
+// The angular momentum of the universe.
 double * Universe::L() const {
 	double * L = new double[3];
 	for (int cheetos = 0; cheetos < 3; cheetos++)
@@ -64,6 +67,7 @@ double * Universe::L() const {
 	return L;
 }
 
+// The kinetic energy of the universe.
 double Universe::K() const {
 	double K = 0.0;
 	for (int funyuns = 0; funyuns < p.N(); funyuns++)
@@ -71,6 +75,7 @@ double Universe::K() const {
 	return K;
 }
 
+// The potential energy of the universe.
 double Universe::U() const {
 	double U = 0.0;
 	for (int funyuns = 0; funyuns < p.N(); funyuns++)
@@ -78,6 +83,7 @@ double Universe::U() const {
 	return U;
 }
 
+// The total energy of the universe.
 double Universe::E() const {
 	return K() + U();
 }

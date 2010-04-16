@@ -13,39 +13,52 @@
 #include <istream>
 using namespace std;
 
+// Purely virtual base class for the events our 'events manager' will handle.
 class Event {
 public:
-	Event();
 	virtual ~Event();
 
-	virtual Event *NewCopy() const = 0;
-	virtual bool Check() = 0;
+	virtual Event *NewCopy() const = 0; // Creates a new copy of the derived class on the heap.
+	virtual bool Check() = 0; // Member function to check if the event has happened.
 
+	// Returns the time till this event happens next.
+	// '-1' equates to 'I don't know.
 	double GetNextEvent() const;
+
+	// Set a shared snapshot of the time and planets
+	// for the events to check against.
 	static void SetSnapShot(double time, const Planets &p);
 
+	// Accessors:
 	virtual double GetTime() const;
 	virtual const Planets *GetPlanets() const;
 
 protected:
+	// Purely virtual. Do not create one!
+	Event();
+
 	double nextEvent;
 	static double time;
 	static const Planets *p;
 };
 
+
+// An event that triggers after a timed amount.
 class TimedEvent: public Event {
 public:
-	TimedEvent(double printSkip, double initialPrint);
+	TimedEvent(double skipTime, double initialEvent);
 	~TimedEvent();
 
 	Event *NewCopy() const;
 	bool Check();
 
 private:
-	double printSkip; // The time to skip between prints.
-	double tPrint; // Time to print
+	const double skipTime; // The time to skip between events.
+	double tTrigger; // Next event time.
 };
 
+
+// Event that triggers when a planet orbits the star (planet indexed 0).
 class OrbitEvent: public Event {
 public:
 	OrbitEvent(double planetIndex, bool findAll, double orbitToFind = 0);

@@ -19,11 +19,11 @@ public:
 	Universe(const HatParams &params);
 	~Universe();
 
-	void BigBang();
+	void BigBang();  // Bang!
 
 	double GetTime() const;
 
-	//Diagnostics
+	// Some diagnostics tools:
 	double * P() const;
 	double * L() const;
 	double K() const;
@@ -31,11 +31,13 @@ public:
 	double E() const;
 
 private:
-	const HatParams &params;
+	const HatParams &params;  // Only gets a reference to the parameters so don't mess with it.
 	Integrator integrator;
 	double t, h;
-
-	//friend double HatParams::GetStep(Universe * u);
 };
+
+inline double Universe::GetTime() const {  // It's relative.
+	return t;
+}
 
 #endif /* UNIVERSE_H_ */

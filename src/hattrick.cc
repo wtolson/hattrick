@@ -21,32 +21,28 @@
 
 
 // C++ Libraries
+// Nothing to see here.
 //#include <iostream>
-//#include <cmath>
+//using namespace std;
 
 // My Libraries
 #include "HatParams.h"
 #include "Universe.h"
 #include "voodoomagic.h"
 
-// Nothing to see here.
-
-//using namespace std;
-
 int main(int argc, char** argv) {
 
-	Universe *theUniverse;	
+	HatParams params(argc, argv);  // Read in parameters.
 
-	// Read in parameters.
-	HatParams params(argc, argv);
+	Universe *theUniverse;
 
 	if (params.IsAwesome()) {
 		theUniverse = new Universe(params);
 	} else {
-		return 1;
+		return 1;  // Exit if things suck.
 	}
 
-	sacrificeChicken();
+	Voodoo::sacrificeChicken();
 	theUniverse->BigBang();
 
 	delete theUniverse;
