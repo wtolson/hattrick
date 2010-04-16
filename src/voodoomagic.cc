@@ -10,6 +10,6 @@
 
 #include "voodoomagic.h"
 
-void sacrificeChicken(){
+void Voodoo::sacrificeChicken(){
     //More magic.
 }

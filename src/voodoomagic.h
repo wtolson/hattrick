@@ -9,6 +9,8 @@
 #ifndef VOODOO_MAGIC_H
 #define VOODOO_MAGIC_H
 
+namespace Voodoo {
 void sacrificeChicken();
+}
 
 #endif /* VOODOO_MAGIC_H */
