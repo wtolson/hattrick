@@ -22,10 +22,9 @@ public:
 	bool AddPlanet(double mass, double x[3], double v[3]);
 	bool AddPlanet(double mass, double a, double e = 0.0, double inc = 0.0,
 			double node = 0.0, double w = 0.0, double M = 0.0);
-	bool AddPlanet(double mass, KeplerianElements ke);
+	bool AddPlanet(double mass, const KeplerianElements &ke);
 
 	operator double *() const;
-	operator int() const;
 	int N() const;
 	double M(int i) const;
 
@@ -57,10 +56,6 @@ private:
 
 inline Planets::operator double *() const {
 	return y;
-}
-
-inline Planets::operator int() const {
-	return numPlanets;
 }
 
 inline int Planets::N() const {

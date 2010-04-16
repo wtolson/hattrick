@@ -9,20 +9,12 @@
 #include "Integrator.h"
 #include <cmath>
 
-//Step types.
-const int Integrator::RKF45 = 0;
-const int Integrator::RK8PD = 1;
-const int Integrator::BSIMP = 2;
-
 #include <iostream>
 using namespace std;
 
 // stepType, dim, eps_abs, t, t1, y, funct, jac, params
 Integrator::Integrator(int stepType, int dim, double eps_abs, double t,
-		double t1, double y[], int(* function)(double t, const double y[],
-				double dydt[], void * params), int(* jacobian)(double t,
-				const double y[], double * dfdy, double dfdt[], void * params),
-		void * params) :
+		double t1, double *y, function f, jacobian j, void *params) :
 	t(t), t1(t1), y(y), dim(dim) {
 
 	switch (stepType) {
@@ -42,8 +34,8 @@ Integrator::Integrator(int stepType, int dim, double eps_abs, double t,
 	con = gsl_odeiv_control_y_new(eps_abs, 0.0);
 	evolve = gsl_odeiv_evolve_alloc(dim);
 
-	sys.function = function;
-	sys.jacobian = jacobian;
+	sys.function = f;
+	sys.jacobian = j;
 	sys.dimension = dim;
 	sys.params = params;
 
@@ -67,20 +59,20 @@ bool Integrator::Evolve(double &t, double &h, double y[]) {
 	return status;
 }
 
-double * Integrator::GetStepError() {
+double * Integrator::GetStepError() const {
 	return evolve->yerr;
 }
 
-double * Integrator::GetError() {
+double * Integrator::GetError() const {
 	return totalError;
 }
 
-int Integrator::GetSteps() {
+int Integrator::GetSteps() const {
 	return evolve->count;
 }
 
 void Integrator::SumError(double yerr[]) {
 	for (int i = 0; i < dim; i++)
-		totalError[i] += yerr[i]*yerr[i];
+		totalError[i] += yerr[i] * yerr[i];
 }
 

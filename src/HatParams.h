@@ -22,17 +22,18 @@ public:
 	double t0, t1, hmin, hmax, accr;
 
 	HatParams(int argc, char** argv);
+	HatParams(const HatParams& hp);
 	~HatParams();
 
-	bool IsAwesome();
-	double GetStep(double t, double h, const Planets &p);
+	bool IsAwesome() const;
+	double GetStep(double t, double h, const Planets &p) const;
 
-	static void PrintTime(Event *event);
-	static void PrintStateVectors(Event *event);
-	static void PrintKeplerianElements(Event *event);
-	static void PrintDiagnostics(Event *event);
+	static void PrintTime(const Event *event);
+	static void PrintStateVectors(const Event *event);
+	static void PrintKeplerianElements(const Event *event);
+	static void PrintDiagnostics(const Event *event);
 
-	Planets GetPlanets();
+	const Planets& GetPlanets() const;
 
 private:
 	bool success;
@@ -44,5 +45,9 @@ private:
 };
 
 istream& operator>>(istream& i, Action& a);
+
+inline bool HatParams::IsAwesome() const {
+	return success;
+}
 
 #endif /* HATPARAMS_H */

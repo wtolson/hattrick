@@ -12,19 +12,20 @@
 #include "Planets.h"
 #include "Event.h"
 
-typedef void (* Action)(Event *event);
+typedef void (* Action)(const Event *event);
 
 class EventsManager {
 public:
 
 	EventsManager();
 	EventsManager(int initialCapacity);
+	EventsManager(const EventsManager& em);
 	~EventsManager();
 
-	bool AddEvent(Event& event, Action action);
+	bool AddEvent(const Event& event, Action action);
 
 	bool CheckEvents(double t, const Planets &p);
-	double GetNextEvent();
+	double GetNextEvent() const;
 
 private:
 	int capacity;

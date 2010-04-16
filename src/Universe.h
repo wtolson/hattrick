@@ -16,22 +16,22 @@ class Universe {
 public:
 	Planets p;
 
-	Universe(HatParams &params);
+	Universe(const HatParams &params);
 	~Universe();
 
 	void BigBang();
 
-	double GetTime();
+	double GetTime() const;
 
 	//Diagnostics
-	double * P();
-	double * L();
-	double K();
-	double U();
-	double E();
+	double * P() const;
+	double * L() const;
+	double K() const;
+	double U() const;
+	double E() const;
 
 private:
-	HatParams &params;
+	const HatParams &params;
 	Integrator integrator;
 	double t, h;
 

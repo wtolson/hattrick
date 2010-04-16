@@ -125,7 +125,7 @@ bool Planets::AddPlanet(double mass, double a, double e, double inc,
 	return true;
 }
 
-bool Planets::AddPlanet(double mass, KeplerianElements ke) {
+bool Planets::AddPlanet(double mass, const KeplerianElements& ke) {
 	return AddPlanet(mass, ke.a, ke.e, ke.inc, ke.node, ke.w, ke.M);
 }
 

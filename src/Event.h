@@ -18,14 +18,14 @@ public:
 	Event();
 	virtual ~Event();
 
-	virtual Event *NewCopy() = 0;
+	virtual Event *NewCopy() const = 0;
 	virtual bool Check() = 0;
 
-	double GetNextEvent();
+	double GetNextEvent() const;
 	static void SetSnapShot(double time, const Planets &p);
 
-	virtual double GetTime();
-	virtual const Planets *GetPlanets();
+	virtual double GetTime() const;
+	virtual const Planets *GetPlanets() const;
 
 protected:
 	double nextEvent;
@@ -38,7 +38,7 @@ public:
 	TimedEvent(double printSkip, double initialPrint);
 	~TimedEvent();
 
-	Event *NewCopy();
+	Event *NewCopy() const;
 	bool Check();
 
 private:
@@ -51,11 +51,11 @@ public:
 	OrbitEvent(double planetIndex, bool findAll, double orbitToFind = 0);
 	~OrbitEvent();
 
-	Event *NewCopy();
+	Event *NewCopy() const;
 	bool Check();
 
-	double GetTime();
-	const Planets *GetPlanets();
+	double GetTime() const;
+	const Planets *GetPlanets() const;
 
 private:
 	static const int paramType = 3;
@@ -82,15 +82,15 @@ private:
 
 //Inline for Events:
 
-inline double Event::GetNextEvent() {
+inline double Event::GetNextEvent() const {
 	return nextEvent;
 }
 
-inline double Event::GetTime() {
+inline double Event::GetTime() const {
 	return time;
 }
 
-inline const Planets *Event::GetPlanets() {
+inline const Planets *Event::GetPlanets() const {
 	return p;
 }
 
@@ -101,7 +101,7 @@ inline void Event::SetSnapShot(double time, const Planets &p) {
 
 //Inline for OrbitEvent:
 
-inline double OrbitEvent::GetTime() {
+inline double OrbitEvent::GetTime() const {
 	if (findAll) {
 		return time;
 	} else {
@@ -109,7 +109,7 @@ inline double OrbitEvent::GetTime() {
 	}
 }
 
-inline const Planets *OrbitEvent::GetPlanets() {
+inline const Planets *OrbitEvent::GetPlanets() const {
 	if (findAll) {
 		return p;
 	} else {

@@ -29,6 +29,15 @@ EventsManager::EventsManager(int initialCapacity) {
 	actions = new Action[capacity];
 }
 
+EventsManager::EventsManager(const EventsManager& em) :
+	capacity(em.capacity), numEvents(em.numEvents),
+			events(new Event*[capacity]), actions(new Action[capacity]) {
+	for (int i = 0; i < numEvents; i++) {
+		events[i] = em.events[i]->NewCopy();
+		actions[i] = em.actions[i];
+	}
+}
+
 EventsManager::~EventsManager() {
 	delete[] actions;
 	for (int i = 0; i < numEvents; i++)
@@ -36,7 +45,7 @@ EventsManager::~EventsManager() {
 	delete[] events;
 }
 
-bool EventsManager::AddEvent(Event& event, Action action) {
+bool EventsManager::AddEvent(const Event& event, Action action) {
 	if (numEvents == capacity)
 		Grow();
 
@@ -59,7 +68,7 @@ bool EventsManager::CheckEvents(double t, const Planets &p) {
 	return status;
 }
 
-double EventsManager::GetNextEvent() {
+double EventsManager::GetNextEvent() const {
 	int count = 0;
 	for (; count < numEvents; count++) {
 		if (events[count]->GetNextEvent() != -1.0)
@@ -94,5 +103,4 @@ void EventsManager::Grow() {
 	delete[] actionsTemp;
 	delete[] eventsTemp;
 }
-
 

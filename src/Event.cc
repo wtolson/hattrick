@@ -25,7 +25,7 @@ TimedEvent::TimedEvent(double printSkip, double initialPrint) :
 TimedEvent::~TimedEvent() {
 }
 
-Event *TimedEvent::NewCopy() {
+Event *TimedEvent::NewCopy() const {
 	return new TimedEvent(*this);
 }
 
@@ -48,7 +48,7 @@ OrbitEvent::OrbitEvent(double planetIndex, bool findAll, double orbitToFind) :
 OrbitEvent::~OrbitEvent() {
 }
 
-Event *OrbitEvent::NewCopy() {
+Event *OrbitEvent::NewCopy() const {
 	return new OrbitEvent(*this);
 }
 

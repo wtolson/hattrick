@@ -163,20 +163,22 @@ HatParams::HatParams(int argc, char** argv) :
 	p->MoveToCM();
 }
 
+HatParams::HatParams(const HatParams& hp) :
+	N(hp.N), stepType(hp.stepType), t0(hp.t0), t1(hp.t1), hmin(hp.hmin), hmax(
+			hp.hmax), accr(hp.accr), success(hp.success), p(new Planets(*hp.p)),
+			em(new EventsManager(*hp.em)) {
+}
+
 HatParams::~HatParams() {
 	delete em;
 	delete p;
 }
 
-bool HatParams::IsAwesome() {
-	return success;
-}
-
-Planets HatParams::GetPlanets() {
+const Planets& HatParams::GetPlanets() const {
 	return *p;
 }
 
-double HatParams::GetStep(double t, double h, const Planets &p) {
+double HatParams::GetStep(double t, double h, const Planets &p) const {
 
 	em->CheckEvents(t, p);
 
@@ -214,11 +216,11 @@ istream& operator>>(istream& i, Action& a) {
 	return i;
 }
 
-void HatParams::PrintTime(Event *event) {
+void HatParams::PrintTime(const Event *event) {
 	cout << event->GetTime() << endl;
 }
 
-void HatParams::PrintStateVectors(Event *event) {
+void HatParams::PrintStateVectors(const Event *event) {
 	const Planets &p = *event->GetPlanets();
 
 	cout << event->GetTime() << " ";
@@ -231,7 +233,7 @@ void HatParams::PrintStateVectors(Event *event) {
 	cout << endl;
 }
 
-void HatParams::PrintKeplerianElements(Event *event) {
+void HatParams::PrintKeplerianElements(const Event *event) {
 	const Planets &p = *event->GetPlanets();
 
 	cout << event->GetTime() << " ";
@@ -250,7 +252,7 @@ void HatParams::PrintKeplerianElements(Event *event) {
 	cout << endl;
 }
 
-void HatParams::PrintDiagnostics(Event *event) {
+void HatParams::PrintDiagnostics(const Event *event) {
 	const Planets &p = *event->GetPlanets();
 
 	cout << event->GetTime() << " ";

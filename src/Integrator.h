@@ -13,21 +13,24 @@
 
 class Integrator {
 public:
-	const static int RKF45;
-	const static int RK8PD;
-	const static int BSIMP;
+	enum StepType {
+		RKF45, RK8PD, BSIMP
+	};
 
-	Integrator(int stepType, int dim, double eps_abs, double t,
-			double t1, double * y, int(* function)(double t, const double y[],
-					double dydt[], void * params), int(* jacobian)(double t,
-					const double y[], double * dfdy, double dfdt[], void * params),
+	typedef int (* function)(double t, const double y[], double dydt[],
 			void * params);
+
+	typedef int (* jacobian)(double t, const double y[], double * dfdy,
+			double dfdt[], void * params);
+
+	Integrator(int stepType, int dim, double eps_abs, double t, double t1,
+			double *y, function f, jacobian j, void *params);
 	virtual ~Integrator();
 
 	bool Evolve(double &t, double &h, double y[]);
-	double * GetError();
-	double * GetStepError();
-	int GetSteps();
+	double *GetError() const;
+	double *GetStepError() const;
+	int GetSteps() const;
 
 private:
 	gsl_odeiv_step * step;
